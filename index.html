@@ -1,0 +1,3192 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚽ 2026 FIFA DÜNYA KUPASI - 8BİT EDİSYON</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+:root {
+  --bg: #0a0a1a;
+  --bg2: #0f0f2a;
+  --panel: #12122a;
+  --border: #3333aa;
+  --gold: #ffd700;
+  --green: #00ff44;
+  --cyan: #00ffff;
+  --red: #ff3344;
+  --white: #eeeeff;
+  --grey: #556677;
+  --pixel: 4px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; image-rendering: pixelated; }
+
+body {
+  background: var(--bg);
+  font-family: 'Press Start 2P', monospace;
+  color: var(--white);
+  overflow-x: hidden;
+  cursor: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect width='6' height='6' fill='%23ffd700'/><rect x='6' y='6' width='4' height='4' fill='%23ffd700'/></svg>") 0 0, auto;
+}
+
+/* SCANLINE OVERLAY */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.08) 3px, rgba(0,0,0,0.08) 4px);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ======= HEADER ======= */
+header {
+  background: var(--bg2);
+  border-bottom: 4px solid var(--gold);
+  padding: 20px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 0 #aa8800, 0 8px 0 #665500;
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+header.hidden-for-game {
+  display: none;
+}
+
+nav.hidden-for-game {
+  display: none;
+}
+
+.header-trophy {
+  display: inline-block;
+  font-size: 48px;
+  animation: bounce 1s steps(2) infinite;
+  margin-bottom: 8px;
+}
+
+@keyframes spin {
+  0% { transform: rotateY(0deg); }
+  100% { transform: rotateY(360deg); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+header h1 {
+  font-size: clamp(8px, 2vw, 14px);
+  color: var(--gold);
+  text-shadow: 3px 3px 0 #aa7700, 6px 6px 0 #553300;
+  letter-spacing: 2px;
+  line-height: 1.8;
+}
+
+header h2 {
+  font-size: clamp(6px, 1.2vw, 10px);
+  color: var(--cyan);
+  margin-top: 6px;
+  animation: blink 1.5s steps(1) infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* STAR TICKER */
+.ticker-wrap {
+  background: #000;
+  border-top: 2px solid var(--gold);
+  border-bottom: 2px solid var(--gold);
+  overflow: hidden;
+  padding: 6px 0;
+  margin-top: 12px;
+}
+
+.ticker {
+  display: inline-block;
+  white-space: nowrap;
+  animation: ticker 180s linear infinite;
+  font-size: 8px;
+  color: var(--green);
+}
+
+@keyframes ticker {
+  0% { transform: translateX(100vw); }
+  100% { transform: translateX(-100%); }
+}
+
+/* NAV TABS */
+.nav-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 12px 16px;
+  background: #060610;
+  border-bottom: 4px solid var(--border);
+  justify-content: center;
+}
+
+.tab-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  padding: 8px 10px;
+  background: var(--panel);
+  color: var(--grey);
+  border: 2px solid var(--border);
+  cursor: pointer;
+  transition: none;
+  position: relative;
+  text-transform: uppercase;
+}
+
+.tab-btn:hover, .tab-btn.active {
+  background: var(--gold);
+  color: #000;
+  border-color: var(--gold);
+  box-shadow: 3px 3px 0 #886600;
+  transform: translate(-1px, -1px);
+}
+
+.tab-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 #886600;
+}
+
+/* MAIN CONTENT */
+main {
+  padding: 16px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+/* ======= GROUP GRID ======= */
+.groups-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.group-card {
+  background: var(--panel);
+  border: 3px solid var(--border);
+  box-shadow: 4px 4px 0 #111133;
+  position: relative;
+  overflow: hidden;
+}
+
+.group-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--gold);
+}
+
+.group-header {
+  background: linear-gradient(135deg, #1a1a4a, #0a0a2a);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 3px solid var(--border);
+}
+
+.group-letter {
+  font-size: 22px;
+  color: var(--gold);
+  text-shadow: 2px 2px 0 #886600;
+  min-width: 30px;
+}
+
+.group-header-title {
+  font-size: 7px;
+  color: var(--cyan);
+  line-height: 1.6;
+}
+
+.team-list {
+  padding: 8px;
+}
+
+.team-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  margin-bottom: 4px;
+  transition: background 0.1s;
+  position: relative;
+}
+
+.team-item:hover {
+  background: #1a1a3a;
+  border-color: var(--cyan);
+  box-shadow: 2px 2px 0 #002244;
+}
+
+.team-item:hover .team-name {
+  color: var(--gold);
+}
+
+.flag-emoji {
+  font-size: 20px;
+  min-width: 28px;
+  text-align: center;
+}
+
+.flag-pixel {
+  width: 32px;
+  height: 22px;
+  image-rendering: pixelated;
+  border: 1px solid #333;
+  flex-shrink: 0;
+}
+
+.team-name {
+  font-size: 7px;
+  color: var(--white);
+  line-height: 1.4;
+  flex: 1;
+}
+
+.team-badge {
+  font-size: 7px;
+  color: var(--grey);
+  background: #0a0a1a;
+  padding: 2px 4px;
+  border: 1px solid #333;
+}
+
+/* HOST BADGE */
+.host-badge {
+  font-size: 6px;
+  background: var(--gold);
+  color: #000;
+  padding: 1px 4px;
+  margin-left: 4px;
+}
+
+/* ======= MODAL ======= */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal-box {
+  background: var(--bg2);
+  border: 4px solid var(--gold);
+  box-shadow: 8px 8px 0 #886600, 0 0 40px rgba(255,215,0,0.2);
+  max-width: 500px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  animation: popIn 0.15s steps(3) forwards;
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.modal-close {
+  position: absolute;
+  top: 8px; right: 8px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  background: var(--red);
+  color: #fff;
+  border: 2px solid #aa0000;
+  padding: 4px 8px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.modal-close:hover { background: #ff0000; }
+
+.modal-flag {
+  font-size: 64px;
+  text-align: center;
+  padding: 20px;
+  background: #0a0a1a;
+  border-bottom: 3px solid var(--border);
+}
+
+.modal-body {
+  padding: 16px;
+}
+
+.modal-country-name {
+  font-size: 12px;
+  color: var(--gold);
+  text-shadow: 2px 2px 0 #886600;
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.info-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 7px;
+  align-items: flex-start;
+}
+
+.info-label {
+  color: var(--cyan);
+  min-width: 80px;
+  flex-shrink: 0;
+}
+
+.info-val {
+  color: var(--white);
+  line-height: 1.6;
+}
+
+.achievement-box {
+  background: #0a0a1a;
+  border: 2px solid var(--gold);
+  padding: 8px;
+  margin-top: 10px;
+  font-size: 7px;
+  color: var(--gold);
+  line-height: 1.8;
+}
+
+.achievement-box h4 {
+  color: var(--green);
+  margin-bottom: 6px;
+  font-size: 8px;
+}
+
+/* ======= FIXTURES PAGE ======= */
+.fixture-group-section {
+  margin-bottom: 24px;
+}
+
+.fixture-group-title {
+  font-size: 10px;
+  color: var(--gold);
+  padding: 8px 12px;
+  background: #1a1a3a;
+  border-left: 4px solid var(--gold);
+  border-top: 3px solid var(--border);
+  border-right: 3px solid var(--border);
+  border-bottom: 3px solid var(--border);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.match-card {
+  background: var(--panel);
+  border: 2px solid var(--border);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  overflow: hidden;
+}
+
+.match-date {
+  background: #0a0a2a;
+  padding: 8px 10px;
+  font-size: 6px;
+  color: var(--cyan);
+  min-width: 90px;
+  text-align: center;
+  border-right: 2px solid var(--border);
+  line-height: 1.8;
+}
+
+.match-teams {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 7px;
+  color: var(--white);
+  line-height: 1.6;
+}
+
+.match-vs {
+  color: var(--red);
+  font-size: 8px;
+  margin: 0 6px;
+}
+
+.match-venue {
+  padding: 6px 10px;
+  font-size: 6px;
+  color: var(--grey);
+  text-align: right;
+  min-width: 120px;
+  border-left: 2px solid var(--border);
+  line-height: 1.8;
+}
+
+.venue-icon {
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* STADIUM 8BIT ART */
+.stadium-art {
+  display: inline-block;
+  width: 48px;
+  height: 30px;
+  margin-right: 6px;
+  vertical-align: middle;
+  image-rendering: pixelated;
+}
+
+/* ======= STADIUMS PAGE ======= */
+.stadiums-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.stadium-card {
+  background: var(--panel);
+  border: 3px solid var(--border);
+  box-shadow: 4px 4px 0 #111133;
+  overflow: hidden;
+}
+
+.stadium-pixel-art {
+  width: 100%;
+  height: 180px;
+  background: #050510;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 3px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.stadium-card-body {
+  padding: 12px;
+}
+
+.stadium-name {
+  font-size: 7px;
+  color: var(--gold);
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+
+.stadium-info {
+  font-size: 6px;
+  color: var(--grey);
+  line-height: 1.8;
+}
+
+.stadium-info span {
+  color: var(--cyan);
+}
+
+/* PIXEL ART STADIUMS via CSS/SVG */
+canvas.pixel-stadium {
+  image-rendering: pixelated;
+  width: 100%;
+  height: 100%;
+}
+
+/* ======= PIXEL STARS ======= */
+.stars {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.star {
+  position: absolute;
+  background: #fff;
+  animation: twinkle 2s steps(2) infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.1; }
+}
+
+/* SCROLL STYLING */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 0; }
+
+/* PIXEL BUTTON */
+.pixel-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  padding: 8px 14px;
+  background: var(--green);
+  color: #000;
+  border: none;
+  border-bottom: 4px solid #006622;
+  border-right: 4px solid #006622;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.pixel-btn:hover { background: #00ff88; }
+.pixel-btn:active { border-bottom: 0; border-right: 0; transform: translate(2px,2px); }
+
+/* PAGE TITLE */
+.page-title {
+  font-size: clamp(8px, 2vw, 14px);
+  color: var(--gold);
+  text-shadow: 2px 2px 0 #886600;
+  margin: 16px 0 4px 0;
+  padding-bottom: 8px;
+  border-bottom: 3px solid var(--border);
+}
+
+.page-sub {
+  font-size: 7px;
+  color: var(--grey);
+  margin-bottom: 16px;
+}
+
+/* GROUP FLAG SPRITE */
+.flag-box {
+  font-size: 18px;
+  width: 30px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* CONTINENT BADGE */
+.continent-badge {
+  display: inline-block;
+  font-size: 6px;
+  padding: 2px 5px;
+  border: 1px solid;
+  margin-right: 4px;
+}
+
+.UEFA { border-color: #4444ff; color: #6688ff; }
+.CONMEBOL { border-color: #00aa44; color: #00ff66; }
+.AFC { border-color: #ff6600; color: #ff9944; }
+.CAF { border-color: #ffcc00; color: #ffdd44; }
+.CONCACAF { border-color: #ff4488; color: #ff66aa; }
+.OFC { border-color: #aaffee; color: #ccffee; }
+
+/* PIXEL PROGRESS BAR */
+.pixel-progress {
+  height: 8px;
+  background: #111122;
+  border: 2px solid var(--border);
+  margin-top: 4px;
+  overflow: hidden;
+}
+
+.pixel-progress-fill {
+  height: 100%;
+  background: repeating-linear-gradient(90deg, var(--gold) 0, var(--gold) 6px, #aa7700 6px, #aa7700 8px);
+  animation: none;
+}
+
+/* INTRO SCREEN */
+.intro-screen {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.intro-screen .big-trophy {
+  font-size: 80px;
+  display: block;
+  margin-bottom: 16px;
+  animation: bounce 1s steps(2) infinite;
+}
+
+.pixel-grid-bg {
+  background-image:
+    linear-gradient(rgba(30,30,80,0.4) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30,30,80,0.4) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* MATCH TEAMS display */
+.teams-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .match-venue { display: none; }
+  .groups-grid { grid-template-columns: 1fr; }
+  .stadiums-grid { grid-template-columns: 1fr; }
+}
+
+/* ======= ADMIN SİSTEMİ ======= */
+.admin-btn {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  padding: 8px 10px;
+  background: #0a0a1a;
+  color: var(--grey);
+  border: 2px solid #222244;
+  cursor: pointer;
+  z-index: 500;
+  transition: none;
+}
+.admin-btn:hover { border-color: var(--gold); color: var(--gold); }
+.admin-btn.logged-in { color: var(--green); border-color: var(--green); }
+
+.admin-login-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.9);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+}
+.admin-login-overlay.open { display: flex; }
+
+.admin-login-box {
+  background: var(--bg2);
+  border: 4px solid var(--gold);
+  box-shadow: 8px 8px 0 #886600;
+  padding: 24px;
+  width: 320px;
+  animation: popIn 0.15s steps(3) forwards;
+}
+
+.admin-login-box h3 {
+  font-size: 10px;
+  color: var(--gold);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.admin-input {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  width: 100%;
+  padding: 10px;
+  background: #0a0a1a;
+  color: var(--white);
+  border: 2px solid var(--border);
+  margin-bottom: 12px;
+  outline: none;
+}
+.admin-input:focus { border-color: var(--cyan); }
+
+.admin-login-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  width: 100%;
+  padding: 10px;
+  background: var(--gold);
+  color: #000;
+  border: none;
+  border-bottom: 4px solid #886600;
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+.admin-login-btn:hover { background: #ffe44d; }
+.admin-login-btn:active { border-bottom: 0; transform: translateY(2px); }
+
+.admin-cancel-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  width: 100%;
+  padding: 8px;
+  background: transparent;
+  color: var(--grey);
+  border: 2px solid var(--border);
+  cursor: pointer;
+}
+.admin-cancel-btn:hover { color: var(--red); border-color: var(--red); }
+
+.admin-error {
+  font-size: 7px;
+  color: var(--red);
+  text-align: center;
+  margin-bottom: 10px;
+  min-height: 14px;
+}
+
+/* FOTO UPLOAD PANEL */
+.foto-upload-panel {
+  display: none;
+  background: #0a0a2a;
+  border: 2px solid var(--gold);
+  padding: 12px;
+  margin-top: 8px;
+}
+.foto-upload-panel.visible { display: block; }
+
+.foto-upload-label {
+  display: block;
+  font-size: 7px;
+  color: var(--cyan);
+  margin-bottom: 6px;
+}
+
+.foto-upload-input {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 6px;
+  width: 100%;
+  padding: 6px;
+  background: #050510;
+  color: var(--white);
+  border: 2px solid var(--border);
+  cursor: pointer;
+  margin-bottom: 6px;
+}
+
+.foto-remove-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 6px;
+  padding: 4px 8px;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  margin-top: 4px;
+}
+.foto-remove-btn:hover { background: #ff0000; }
+
+.admin-badge {
+  display: inline-block;
+  font-size: 6px;
+  background: var(--green);
+  color: #000;
+  padding: 2px 5px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+.live-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  background: #0a0a1a;
+  border: 2px solid var(--border);
+}
+
+.live-dot {
+  display: inline-block;
+  width: 10px; height: 10px;
+  background: var(--red);
+  border-radius: 0;
+  animation: blink 0.8s steps(1) infinite;
+  margin-right: 6px;
+}
+
+.live-refresh-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  padding: 6px 12px;
+  background: #1a1a3a;
+  color: var(--cyan);
+  border: 2px solid var(--cyan);
+  cursor: pointer;
+}
+.live-refresh-btn:hover { background: var(--cyan); color: #000; }
+
+.live-status-text {
+  font-size: 7px;
+  color: var(--grey);
+}
+
+.score-section-title {
+  font-size: 8px;
+  color: var(--gold);
+  padding: 6px 10px;
+  background: #1a1a3a;
+  border-left: 4px solid var(--red);
+  border: 2px solid var(--border);
+  margin: 12px 0 6px 0;
+}
+
+.score-card {
+  background: var(--panel);
+  border: 2px solid var(--border);
+  margin-bottom: 6px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 10px 12px;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.score-card.live-now {
+  border-color: var(--red);
+  animation: pulse-border 2s steps(2) infinite;
+}
+
+@keyframes pulse-border {
+  0%, 100% { border-color: var(--red); }
+  50% { border-color: #550000; }
+}
+
+.score-card.live-now::before {
+  content: '● CANLI';
+  position: absolute;
+  top: 4px; right: 6px;
+  font-size: 6px;
+  color: var(--red);
+  animation: blink 1s steps(1) infinite;
+}
+
+.score-team {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 8px;
+}
+
+.score-team.right {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+.score-team-flag { font-size: 22px; }
+
+.score-team-name {
+  font-size: 7px;
+  color: var(--white);
+  line-height: 1.5;
+}
+
+.score-middle {
+  text-align: center;
+  min-width: 80px;
+}
+
+.score-result {
+  font-size: 20px;
+  color: var(--gold);
+  text-shadow: 2px 2px 0 #886600;
+  letter-spacing: 4px;
+}
+
+.score-time {
+  font-size: 6px;
+  color: var(--grey);
+  margin-top: 4px;
+  display: block;
+}
+
+.score-minute {
+  font-size: 7px;
+  color: var(--green);
+}
+
+.no-matches-box {
+  text-align: center;
+  padding: 40px 20px;
+  border: 2px solid var(--border);
+  background: var(--panel);
+  margin: 20px 0;
+}
+
+.no-matches-box .big-icon { font-size: 48px; display: block; margin-bottom: 12px; }
+.no-matches-box h3 { font-size: 10px; color: var(--gold); margin-bottom: 12px; }
+.no-matches-box p { font-size: 7px; color: var(--grey); line-height: 2; }
+
+.countdown-box {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.countdown-unit {
+  background: #0a0a1a;
+  border: 2px solid var(--gold);
+  text-align: center;
+  padding: 12px 6px;
+}
+
+.countdown-num {
+  font-size: 22px;
+  color: var(--gold);
+  text-shadow: 2px 2px 0 #886600;
+  display: block;
+}
+
+.countdown-lbl {
+  font-size: 6px;
+  color: var(--grey);
+  display: block;
+  margin-top: 4px;
+}
+
+.next-match-card {
+  background: var(--panel);
+  border: 3px solid var(--gold);
+  padding: 16px;
+  margin: 12px 0;
+  text-align: center;
+}
+
+.next-match-title {
+  font-size: 7px;
+  color: var(--cyan);
+  margin-bottom: 10px;
+}
+
+.next-match-teams {
+  font-size: 12px;
+  color: var(--gold);
+  margin: 8px 0;
+}
+
+.next-match-info {
+  font-size: 6px;
+  color: var(--grey);
+  line-height: 2;
+  margin-top: 8px;
+}
+
+.api-error-box {
+  background: #1a0a0a;
+  border: 2px solid var(--red);
+  padding: 16px;
+  margin: 12px 0;
+  font-size: 7px;
+  color: #ff8888;
+  line-height: 2;
+}
+</style>
+</head>
+<body>
+
+<!-- Stars BG -->
+<div class="stars" id="stars"></div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-trophy" style="perspective:300px">
+    <img src="trophy.png" style="width:80px;height:auto;image-rendering:pixelated;animation:spin 3s linear infinite;display:block;margin:0 auto 8px auto;" alt="FIFA World Cup Trophy">
+  </div>
+  <h1>2026 FIFA DÜNYA KUPASI<br>8-BİT GRUP REHBER</h1>
+  <h2>► PRESS START ◄</h2>
+  <div class="ticker-wrap">
+    <span class="ticker">⚽ AÇILIŞ MAÇI: MEKSİKA 🇲🇽 vs GÜNEY AFRİKA 🇿🇦 — 11 HAZİRAN 2026 — ESTADIO AZTECA — TSİ 22:00 ★ FİNAL: 19 TEMMUZ — METLİFE STADIUM — NEW JERSEY 🏆 ★ 🇹🇷 TÜRKİYE PLAY-OFF'DAN ÇIKTI! KOSOVA'YI YENDİ — GRUP D'DE ABD, PARAGUAY, AVUSTRALYA İLE ★ 🐐 MESSİ MEVCUT ŞAMPİYON — ARJANTİN GRUP J'DE ★ ⚡ HAALAND İLK DÜNYA KUPASI'NDA — NORVEÇ GRUP I ★ 🌍 İLK KEZ 3 ÜLKE ORTAK EV SAHİPLİĞİ: ABD + KANAda + MEKSİKA ★ 📊 104 MAÇ — 48 TAKIM — 12 GRUP — 16 STADYUM ★ 🆕 İLK KEZ CURAÇAO DÜNYA KUPASI'NDA — EN KÜÇÜK NÜFUSLU ÜLKE ★ 🆕 ÜRDÜN, ÖZBEKİSTAN, YEŞİLBURUN İLK KEZ SAHNEDE ★ 🇧🇷 BREZİLYA 23. KEZ — 🇩🇪 ALMANYA 20. KEZ — 🇦🇷 ARJANTİN 18. KEZ ★ 🏟️ AT&T STADIUM EN ÇOK MAÇ OYNANAN STAT (9 MAÇ) — DALLAS TEXAS ★ 🔥 ARDA GÜLER, LAMİNE YAMAL, BELLINGHAM, VİNİCİUS — GELECEĞİN YILDIZLARI SAHNEDE ★ 📅 GRUP AŞAMASI: 11-27 HAZİRAN — ELEME: 28 HAZİRAN - 3 TEMMUZ — ÇEYREK: 9-11 TEMMUZ ★</span>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav class="nav-tabs">
+  <button class="tab-btn active" onclick="showPage('gruplar')">⚽ GRUPLAR</button>
+  <button class="tab-btn" onclick="showPage('fikstur')">📅 FİKSTÜR</button>
+  <button class="tab-btn" onclick="showPage('canli'); loadLiveScores()">🔴 CANLI SKOR</button>
+  <button class="tab-btn" onclick="showPage('stadyumlar')">🏟️ STADYUMLAR</button>
+  <button class="tab-btn" onclick="showPage('hakkinda')">ℹ️ TURNUVA</button>
+  <button class="tab-btn" onclick="showPage('oyunlar')" style="color:var(--green);border-color:var(--green)">🎮 OYUNLAR</button>
+</nav>
+
+<main>
+
+<!-- ======= GRUPLAR SAYFASI ======= -->
+<div id="page-gruplar" class="page active pixel-grid-bg">
+  <h2 class="page-title">★ GRUP AŞAMASI ★</h2>
+  <p class="page-sub">Bir ülkeye tıkla → detaylı bilgi gör! 12 grup · 48 takım · 3 ev sahibi ülke</p>
+
+  <div class="groups-grid" id="groups-container"></div>
+</div>
+
+<!-- ======= FİKSTÜR SAYFASI ======= -->
+<div id="page-fikstur" class="page pixel-grid-bg">
+  <h2 class="page-title">📅 MAÇ FİKSTÜRÜ (TSİ)</h2>
+  <p class="page-sub">Tüm saatler Türkiye Saati (UTC+3) olarak gösterilmektedir.</p>
+  <div id="fixture-container"></div>
+</div>
+
+<!-- ======= CANLI SKOR SAYFASI ======= -->
+<div id="page-canli" class="page pixel-grid-bg">
+  <h2 class="page-title">🔴 CANLI SKORLAR</h2>
+  <p class="page-sub">2026 FIFA Dünya Kupası maç sonuçları — otomatik yenilenir</p>
+  <div id="live-score-container"></div>
+</div>
+
+
+<div id="page-stadyumlar" class="page pixel-grid-bg">
+  <h2 class="page-title">🏟️ STADYUMLAR</h2>
+  <p class="page-sub">16 şehir · 3 ülke · FIFA Dünya Kupası 2026 mekanları</p>
+  <div class="stadiums-grid" id="stadiums-container"></div>
+</div>
+
+<!-- ======= OYUNLAR SAYFASI ======= -->
+<div id="page-oyunlar" class="page pixel-grid-bg">
+  <h2 class="page-title">🎮 OYUN MERKEZİ</h2>
+  <p class="page-sub">3 8-bit oyun · FIFA Dünya Kupası 2026 teması</p>
+
+  <!-- OYUN SEÇİM EKRANI -->
+  <div id="game-menu" style="display:block">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:16px">
+
+      <div class="group-card" style="padding:0;overflow:hidden;cursor:pointer" onclick="startGame('penalty')">
+        <div style="background:linear-gradient(135deg,#006622,#003311);padding:24px;text-align:center">
+          <div style="font-size:48px;margin-bottom:8px">⚽</div>
+          <canvas id="prev-penalty" width="120" height="60" style="image-rendering:pixelated;display:block;margin:0 auto"></canvas>
+        </div>
+        <div style="padding:14px">
+          <div style="font-size:9px;color:var(--gold);margin-bottom:8px">PENALTI ATIŞI</div>
+          <div style="font-size:6px;color:var(--grey);line-height:1.8">5 penaltı hakkın var.<br>Kaleciye karşı skor yap!<br>⭐ En iyi: <span id="best-penalty">0/5</span></div>
+          <div style="margin-top:10px;font-size:7px;background:var(--green);color:#000;padding:6px;text-align:center;border-bottom:3px solid #006622">► OYNA</div>
+        </div>
+      </div>
+
+      <div class="group-card" style="padding:0;overflow:hidden;cursor:pointer" onclick="startGame('header')">
+        <div style="background:linear-gradient(135deg,#220066,#110033);padding:24px;text-align:center">
+          <div style="font-size:48px;margin-bottom:8px">🤸</div>
+          <canvas id="prev-header" width="120" height="60" style="image-rendering:pixelated;display:block;margin:0 auto"></canvas>
+        </div>
+        <div style="padding:14px">
+          <div style="font-size:9px;color:var(--gold);margin-bottom:8px">KAFA GOLÜ</div>
+          <div style="font-size:6px;color:var(--grey);line-height:1.8">Top geliyor, tam zamanında<br>bas ve gol at! Timing oyunu.<br>⭐ En iyi: <span id="best-header">0</span> gol</div>
+          <div style="margin-top:10px;font-size:7px;background:var(--cyan);color:#000;padding:6px;text-align:center;border-bottom:3px solid #006699">► OYNA</div>
+        </div>
+      </div>
+
+      <div class="group-card" style="padding:0;overflow:hidden;cursor:pointer" onclick="startGame('cards')">
+        <div style="background:linear-gradient(135deg,#662200,#330000);padding:24px;text-align:center">
+          <div style="font-size:48px;margin-bottom:8px">🃏</div>
+          <canvas id="prev-cards" width="120" height="60" style="image-rendering:pixelated;display:block;margin:0 auto"></canvas>
+        </div>
+        <div style="padding:14px">
+          <div style="font-size:9px;color:var(--gold);margin-bottom:8px">KIRMIZI KART!</div>
+          <div style="font-size:6px;color:var(--grey);line-height:1.8">Exploding Kittens tarzı<br>futbol kart oyunu!<br>VAR, Faul, Süper Gol kartları</div>
+          <div style="margin-top:10px;font-size:7px;background:var(--red);color:#fff;padding:6px;text-align:center;border-bottom:3px solid #aa0000">► OYNA</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- OYUN ALANI -->
+  <div id="game-area" style="display:none;margin-top:16px">
+    <button onclick="backToMenu()" style="font-family:'Press Start 2P',monospace;font-size:7px;padding:8px 12px;background:#1a1a3a;color:var(--cyan);border:2px solid var(--cyan);cursor:pointer;margin-bottom:12px">◄ MENÜYE DÖN</button>
+    <div id="game-container"></div>
+  </div>
+</div>
+
+
+<div id="page-hakkinda" class="page pixel-grid-bg">
+  <h2 class="page-title">ℹ️ TURNUVA BİLGİSİ</h2>
+  <div id="about-container"></div>
+</div>
+
+</main>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal-box" id="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕ KAPAT</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+// ======================================================
+// DATA
+// ======================================================
+
+const GROUPS = {
+  A: {
+    teams: [
+      { name: "Meksika", flag: "🇲🇽", continent: "CONCACAF", host: true, wc_best: "Çeyrek Final (1970, 1986)", appearances: 17, info: "Kuzey Amerika'nın futbol devi. İki kez ev sahibi, çeyrek finale çıkmış en iyi sonuç." },
+      { name: "Güney Afrika", flag: "🇿🇦", continent: "CAF", host: false, wc_best: "Grup Aşaması (1998, 2002, 2010)", appearances: 3, info: "2010 Dünya Kupası'na ev sahipliği yapan tek Afrika ülkesi. Açılış golü Lawrence Tshabalala'dan." },
+      { name: "Güney Kore", flag: "🇰🇷", continent: "AFC", host: false, wc_best: "4. lük (2002)", appearances: 11, info: "2002'de Japonya ile birlikte ev sahipliği yaptığı turnuvada 4. oldu. Son 16'ya düzenli çıkan Asya gucu." },
+      { name: "Çekya", flag: "🇨🇿", continent: "UEFA", host: false, wc_best: "3. lük (Çekoslavakya olarak, 1962)", appearances: 3, info: "Play-off'dan geldi. Çekoslavakya döneminde çok başarılıydı; bağımsız olarak finale hiç çıkamadı." },
+    ]
+  },
+  B: {
+    teams: [
+      { name: "Kanada", flag: "🇨🇦", continent: "CONCACAF", host: true, wc_best: "Grup Aşaması (1986)", appearances: 2, info: "Tarihi ilk! Ev sahibi sıfatıyla 2. kez WC'de. 1986'da hiç gol atamadan elendi. Bu sefer çok farklı bir kadro var." },
+      { name: "Bosna-Hersek", flag: "🇧🇦", continent: "UEFA", host: false, wc_best: "Grup Aşaması (2014)", appearances: 2, info: "Play-off'dan çıktı. 2014 Brezilya'sına katılmıştı ama pek şansları yok gibiydi. Güçlü kadrosu var." },
+      { name: "Katar", flag: "🇶🇦", continent: "AFC", host: false, wc_best: "Grup Aşaması (2022)", appearances: 2, info: "2022 ev sahibi. Kendi turnuvasında ilk tur elenme tarihine düştü. İlk maçına dönmek için fırsat." },
+      { name: "İsviçre", flag: "🇨🇭", continent: "UEFA", host: false, wc_best: "3. lük (1954)", appearances: 12, info: "1954 Dünya Kupası'na ev sahipliği yaptı ve 3. oldu. Sürekli katılan ama nadiren yıldız parlatan bir takım." },
+    ]
+  },
+  C: {
+    teams: [
+      { name: "Brezilya", flag: "🇧🇷", continent: "CONMEBOL", host: false, wc_best: "ŞAMPİYON (1958,62,70,94,2002)", appearances: 22, info: "5 kez dünya şampiyonu. En fazla kupa kazanan ülke. Son 20+ yıldır unvan özlemde ama her zaman favoriler arasında." },
+      { name: "Fas", flag: "🇲🇦", continent: "CAF", host: false, wc_best: "Yarı Final (2022)", appearances: 7, info: "2022 Katar'da tüm dünyayı şaşırttı! Yarı finale kadar geldi, Afrika'nın gururu oldu. Avrupa devlerini devirdi." },
+      { name: "Haiti", flag: "🇭🇹", continent: "CONCACAF", host: false, wc_best: "Grup Aşaması (1974)", appearances: 2, info: "Uzun bir aradan sonra Dünya Kupası'na döndü! 1974'ten bu yana ilk katılımları. Sürpriz yapabilir." },
+      { name: "İskoçya", flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿", continent: "UEFA", host: false, wc_best: "Grup Aşaması (1974-1998)", appearances: 8, info: "İngilizlerin kuzey komşusu. 1998'den beri WC'den uzak kaldı. Bu sefer geri döndü ama grup zor!" },
+    ]
+  },
+  D: {
+    teams: [
+      { name: "ABD", flag: "🇺🇸", continent: "CONCACAF", host: true, wc_best: "3. lük (1930), Çeyrek Final (2002)", appearances: 11, info: "Ev sahibi! 1994'ten bu yana ilk ev sahibi WC. 1930'da 3. olmuşlardı. Pochettino yönetiminde iddialı kadro." },
+      { name: "Paraguay", flag: "🇵🇾", continent: "CONMEBOL", host: false, wc_best: "Çeyrek Final (1930, 2010)", appearances: 9, info: "Sürpriz yapabilen bir Güney Amerika takımı. 2010'da son 8'e girmişti. Savunma odaklı oyun stili." },
+      { name: "Avustralya", flag: "🇦🇺", continent: "AFC", host: false, wc_best: "4. lük (1974 OFC olarak), Çeyrek Final (2006, 2022)", appearances: 6, info: "2022'de çeyrek finale kadar çıktı! Graham Arnold'ın takımı. Socceroos güçlü formunu korumaya çalışıyor." },
+      { name: "Türkiye", flag: "🇹🇷", continent: "UEFA", host: false, wc_best: "3. lük (2002)", appearances: 3, info: "Play-off'dan çıkarak gruba dahil oldu! 2002'de muhteşem 3. olmuştu. Arda Güler nesliyle büyük beklentiler var!" },
+    ]
+  },
+  E: {
+    teams: [
+      { name: "Almanya", flag: "🇩🇪", continent: "UEFA", host: false, wc_best: "ŞAMPİYON (1954,74,90,2014)", appearances: 20, info: "4 kez dünya şampiyonu. Tarihinin en tutarlı WC performansını gösteren ülkelerden. Nagelsmann ile yeniden yapılanıyor." },
+      { name: "Curaçao", flag: "🇨🇼", continent: "CONCACAF", host: false, wc_best: "İlk katılım!", appearances: 1, info: "WC tarihine nüfusa göre en küçük ülke olarak girdi! Hollanda Karayipleri'nin bu küçük adası futbolda devrim yapıyor." },
+      { name: "Fildişi Sahili", flag: "🇨🇮", continent: "CAF", host: false, wc_best: "Son 16 (2006)", appearances: 4, info: "Didier Drogba efsanesi bu ülkeden çıktı. Hali hazırda sahada. AFCON şampiyonu olarak güçlü bir kadroyla geliyor." },
+      { name: "Ekvador", flag: "🇪🇨", continent: "CONMEBOL", host: false, wc_best: "Son 16 (2006)", appearances: 4, info: "2022 WC'nin açılış maçına ev sahibi Katar'ı yendi! Güçlü bir Güney Amerika takımı. Gruba 2. çıkabilir." },
+    ]
+  },
+  F: {
+    teams: [
+      { name: "Hollanda", flag: "🇳🇱", continent: "UEFA", host: false, wc_best: "Final (1974, 78, 2010)", appearances: 11, info: "3 kez finale çıktı ama hiç kazanamadı! Total futbolun mucidi. Van Persie'nin o kafa golü hâlâ hafızalarda." },
+      { name: "Japonya", flag: "🇯🇵", continent: "AFC", host: false, wc_best: "Son 16 (2002, 2010, 2018, 2022)", appearances: 8, info: "2022'de Almanya ve İspanya'yı grubunda devirdi! Asya'nın en tutarlı takımı. Son 16'yı artık alışkanlık yaptılar." },
+      { name: "İsveç", flag: "🇸🇪", continent: "UEFA", host: false, wc_best: "2. lük (1958), 3. lük (1950, 1994)", appearances: 12, info: "Play-off'dan geldi. Zlatan'sız dönemde de devam ediyor. 1958'de final oynadılar, ev sahibiydiler." },
+      { name: "Tunus", flag: "🇹🇳", continent: "CAF", host: false, wc_best: "Son 16 (1978)", appearances: 6, info: "Afrika'nın düzenli WC katılımcısı. 2022'de Fransa ile eşleşip grubunu geçemedi. Bu sefer daha iyi çekiliş." },
+    ]
+  },
+  G: {
+    teams: [
+      { name: "Belçika", flag: "🇧🇪", continent: "UEFA", host: false, wc_best: "3. lük (2018)", appearances: 14, info: "2018'de tarihin en iyi kuşağıyla 3. oldu! Lukaku, De Bruyne dönemi bitmek üzere ama hâlâ tehlikeli bir takım." },
+      { name: "Mısır", flag: "🇪🇬", continent: "CAF", host: false, wc_best: "Son 16 (1934)", appearances: 3, info: "Mo Salah liderliğinde Dünya Kupası'nda. 1934'ten bu yana en iyi dönemlerini yaşıyorlar. Salah'ın büyük fırsatı." },
+      { name: "İran", flag: "🇮🇷", continent: "AFC", host: false, wc_best: "Grup Aşaması", appearances: 7, info: "Asya'nın sürekli katılımcılarından. 2022'de dramatik gelişmeler yaşandı. Kadroları her geçen yıl güçleniyor." },
+      { name: "Yeni Zelanda", flag: "🇳🇿", continent: "OFC", host: false, wc_best: "Grup Aşaması (1982, 2010)", appearances: 3, info: "OFC şampiyonu olarak geldi. 2010'da hiç yenilmeden ama beraberlikleriyle gruptan çıkamadı. Sürpriz yapabilirler." },
+    ]
+  },
+  H: {
+    teams: [
+      { name: "İspanya", flag: "🇪🇸", continent: "UEFA", host: false, wc_best: "ŞAMPİYON (2010)", appearances: 16, info: "2010 Dünya Şampiyonu! Tiki-taka efsanesi. Şu an FIFA sıralamalarının 1 numarası. Lamine Yamal kuşağıyla tehlikeli." },
+      { name: "Yeşilburun", flag: "🇨🇻", continent: "CAF", host: false, wc_best: "İlk katılım!", appearances: 1, info: "Afrika'nın küçük ada devleti! İlk WC maceraları. AFCON'da istikrarlı performansları onları buraya taşıdı." },
+      { name: "Suudi Arabistan", flag: "🇸🇦", continent: "AFC", host: false, wc_best: "Çeyrek Final (1994)", appearances: 7, info: "2022'de Arjantin'i (Messi'li!) grupta yendi ve tüm dünyayı şaşırttı! Petrodolarlarıyla büyüyen futbol ekosistemi." },
+      { name: "Uruguay", flag: "🇺🇾", continent: "CONMEBOL", host: false, wc_best: "ŞAMPİYON (1930, 1950)", appearances: 14, info: "2 kez dünya şampiyonu! 1930'un ilk şampiyonu. Çok nüfuslu olmalarına rağmen asla küçümsenmemeli." },
+    ]
+  },
+  I: {
+    teams: [
+      { name: "Fransa", flag: "🇫🇷", continent: "UEFA", host: false, wc_best: "ŞAMPİYON (1998, 2018)", appearances: 16, info: "2 kez dünya şampiyonu! 1998 ev sahibi şampiyonu, 2018 Rusya şampiyonu. Mbappe liderliğinde yine favori." },
+      { name: "Senegal", flag: "🇸🇳", continent: "CAF", host: false, wc_best: "Çeyrek Final (2002)", appearances: 4, info: "2002'de çeyrek finale çıktı, 2022'de şampiyonluğa yaklaşan Afrika. Sadio Mane'nin ardından genç kuşak." },
+      { name: "Irak", flag: "🇮🇶", continent: "AFC", host: false, wc_best: "Grup Aşaması (1986)", appearances: 2, info: "İnterkontinental play-off'dan geldi. 40 yıl aradan sonra! 1986 Meksika'dan bu yana ilk WC katılımları." },
+      { name: "Norveç", flag: "🇳🇴", continent: "UEFA", host: false, wc_best: "Son 16 (1994, 1998)", appearances: 4, info: "Erling Haaland'ın ilk WC'si! Norveç bunu bekliyordu. Haaland ile birlikte artık gerçekten tehlikeli bir kadro." },
+    ]
+  },
+  J: {
+    teams: [
+      { name: "Arjantin", flag: "🇦🇷", continent: "CONMEBOL", host: false, wc_best: "ŞAMPİYON (1978, 86, 2022)", appearances: 18, info: "Mevcut şampiyon! 3 kez dünya kupası. Messi'nin son WC macerası olabilir. Unvanı savunmak için buradalar." },
+      { name: "Cezayir", flag: "🇩🇿", continent: "CAF", host: false, wc_best: "Son 16 (1982, 2014)", appearances: 4, info: "Mahrez ve jenerasyonu. 1982 WC tarihinin dramatik maçlarından birine ev sahipliği yaptılar. Güçlü kadro." },
+      { name: "Avusturya", flag: "🇦🇹", continent: "UEFA", host: false, wc_best: "3. lük (1954)", appearances: 7, info: "1954'te 3. oldu. Onlarca yıl WC'den uzak kaldılar ama son dönemde istikrarlı UEFA performansı var." },
+      { name: "Ürdün", flag: "🇯🇴", continent: "AFC", host: false, wc_best: "İlk katılım!", appearances: 1, info: "Tarihlerinde ilk kez WC'de! Orta Doğu'dan bir ilk. AFCON'unda başarılı sonuçlar onları buraya taşıdı." },
+    ]
+  },
+  K: {
+    teams: [
+      { name: "Portekiz", flag: "🇵🇹", continent: "UEFA", host: false, wc_best: "3. lük (1966, 2006)", appearances: 9, info: "Ronaldo'nun son WC'si! 1966'da Eusébio ile 3. olmuşlardı. Şu an kadro gücü çok yüksek, ilk kez şampiyon olabilirler." },
+      { name: "KD Kongo", flag: "🇨🇩", continent: "CAF", host: false, wc_best: "Son 16 (Zaire olarak, 1974)", appearances: 2, info: "Zaire adıyla 1974'te katılmıştı. 52 yıl aradan sonra! Afrika'nın büyük ülkesi için tarihi bir dönüş." },
+      { name: "Özbekistan", flag: "🇺🇿", continent: "AFC", host: false, wc_best: "İlk katılım!", appearances: 1, info: "Orta Asya'dan ilk WC katılımcısı! Bağımsızlıklarından bu yana büyüyen futbol altyapısının ürünü." },
+      { name: "Kolombiya", flag: "🇨🇴", continent: "CONMEBOL", host: false, wc_best: "Çeyrek Final (1990)", appearances: 7, info: "James Rodriguez dönemi şampiyonluğa yaklaştırmıştı. Yeni kuşak güçlü. Copa America'da istikrarlılar." },
+    ]
+  },
+  L: {
+    teams: [
+      { name: "İngiltere", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", continent: "UEFA", host: false, wc_best: "ŞAMPİYON (1966)", appearances: 16, info: "1966 ev sahibi şampiyonu. 60 yıldır o kupayı bekliyor! Bellingham, Kane, Saka ile güçlü bir kadro var." },
+      { name: "Hırvatistan", flag: "🇭🇷", continent: "UEFA", host: false, wc_best: "3. lük (1998), 2. lik (2018)", appearances: 7, info: "2018'de finale çıktı! Modric hâlâ aktif. Küçük ülke büyük başarı. Son WC olabilir bu kadro için." },
+      { name: "Gana", flag: "🇬🇭", continent: "CAF", host: false, wc_best: "Çeyrek Final (2010)", appearances: 4, info: "2010'da elim şans eseri çeyrek finalist oldu. Suarez'in o el hareketi! Afrika'nın gururu olmaya devam ediyor." },
+      { name: "Panama", flag: "🇵🇦", continent: "CONCACAF", host: false, wc_best: "Grup Aşaması (2018)", appearances: 2, info: "2018'de ilk WC deneyimini yaşadı. Grubundan çıkamadı ama futbol kültürü hızla büyüyor bu ülkede." },
+    ]
+  }
+};
+
+// Match fixtures - ET to TSI (+8 for UTC-5 → UTC+3)
+// ET + 8 = TSI; EDT (UTC-4) +7 = TSI
+const FIXTURES = {
+  A: {
+    matches: [
+      { home: "Meksika", away: "Güney Afrika", date: "11 Haz Perşembe", tsi: "22:00", venue: "Estadio Azteca\nMeksika Şehri", flag1:"🇲🇽", flag2:"🇿🇦" },
+      { home: "Güney Kore", away: "Çekya", date: "11 Haz Perşembe", tsi: "05:00¹", venue: "Estadio Akron\nGuadalajara", flag1:"🇰🇷", flag2:"🇨🇿" },
+      { home: "Çekya", away: "Güney Afrika", date: "18 Haz Perşembe", tsi: "19:00", venue: "Mercedes-Benz\nAtlanta", flag1:"🇨🇿", flag2:"🇿🇦" },
+      { home: "Meksika", away: "Güney Kore", date: "18 Haz Perşembe", tsi: "05:00¹", venue: "Estadio Akron\nGuadalajara", flag1:"🇲🇽", flag2:"🇰🇷" },
+      { home: "Çekya", away: "Meksika", date: "24 Haz Çarşamba", tsi: "05:00¹", venue: "Estadio Azteca\nMeksika Şehri", flag1:"🇨🇿", flag2:"🇲🇽" },
+      { home: "Güney Afrika", away: "Güney Kore", date: "24 Haz Çarşamba", tsi: "05:00¹", venue: "Estadio BBVA\nMonterrey", flag1:"🇿🇦", flag2:"🇰🇷" },
+    ]
+  },
+  B: {
+    matches: [
+      { home: "Kanada", away: "Bosna-Hersek", date: "12 Haz Cuma", tsi: "22:00", venue: "BMO Field\nToronto", flag1:"🇨🇦", flag2:"🇧🇦" },
+      { home: "Katar", away: "İsviçre", date: "13 Haz Cumartesi", tsi: "22:00", venue: "Levi's Stadium\nSan Francisco", flag1:"🇶🇦", flag2:"🇨🇭" },
+      { home: "İsviçre", away: "Bosna-Hersek", date: "18 Haz Perşembe", tsi: "22:00", venue: "SoFi Stadium\nLos Angeles", flag1:"🇨🇭", flag2:"🇧🇦" },
+      { home: "Kanada", away: "Katar", date: "19 Haz Cuma", tsi: "01:00¹", venue: "Levi's Stadium\nSan Francisco", flag1:"🇨🇦", flag2:"🇶🇦" },
+      { home: "İsviçre", away: "Kanada", date: "22 Haz Pazartesi", tsi: "22:00", venue: "BC Place\nVancouver", flag1:"🇨🇭", flag2:"🇨🇦" },
+      { home: "Bosna-Hersek", away: "Katar", date: "22 Haz Pazartesi", tsi: "22:00", venue: "Lumen Field\nSeattle", flag1:"🇧🇦", flag2:"🇶🇦" },
+    ]
+  },
+  C: {
+    matches: [
+      { home: "Brezilya", away: "Fas", date: "13 Haz Cumartesi", tsi: "22:00", venue: "Rose Bowl\nLos Angeles", flag1:"🇧🇷", flag2:"🇲🇦" },
+      { home: "Haiti", away: "İskoçya", date: "14 Haz Pazar", tsi: "22:00", venue: "AT&T Stadium\nDallas", flag1:"🇭🇹", flag2:"🏴󠁧󠁢󠁳󠁣󠁴󠁿" },
+      { home: "Brezilya", away: "Haiti", date: "19 Haz Cuma", tsi: "02:00¹", venue: "Lincoln Financial\nPhiladelphia", flag1:"🇧🇷", flag2:"🇭🇹" },
+      { home: "İskoçya", away: "Fas", date: "19 Haz Cuma", tsi: "22:00", venue: "Hard Rock Stad.\nMiami", flag1:"🏴󠁧󠁢󠁳󠁣󠁴󠁿", flag2:"🇲🇦" },
+      { home: "İskoçya", away: "Brezilya", date: "23 Haz Salı", tsi: "05:00¹", venue: "Hard Rock Stad.\nMiami", flag1:"🏴󠁧󠁢󠁳󠁣󠁴󠁿", flag2:"🇧🇷" },
+      { home: "Fas", away: "Haiti", date: "23 Haz Salı", tsi: "23:00", venue: "Mercedes-Benz\nAtlanta", flag1:"🇲🇦", flag2:"🇭🇹" },
+    ]
+  },
+  D: {
+    matches: [
+      { home: "ABD", away: "Paraguay", date: "12 Haz Cuma", tsi: "22:00", venue: "SoFi Stadium\nLos Angeles", flag1:"🇺🇸", flag2:"🇵🇾" },
+      { home: "Avustralya", away: "Türkiye", date: "13 Haz Cumartesi", tsi: "05:00¹", venue: "Lumen Field\nSeattle", flag1:"🇦🇺", flag2:"🇹🇷" },
+      { home: "ABD", away: "Avustralya", date: "19 Haz Cuma", tsi: "22:00", venue: "Lumen Field\nSeattle", flag1:"🇺🇸", flag2:"🇦🇺" },
+      { home: "Türkiye", away: "Paraguay", date: "20 Haz Cumartesi", tsi: "05:00¹", venue: "Levi's Stadium\nSan Francisco", flag1:"🇹🇷", flag2:"🇵🇾" },
+      { home: "Türkiye", away: "ABD", date: "26 Haz Cuma", tsi: "05:00¹", venue: "Levi's Stadium\nSan Francisco", flag1:"🇹🇷", flag2:"🇺🇸" },
+      { home: "Paraguay", away: "Avustralya", date: "26 Haz Cuma", tsi: "05:00¹", venue: "AT&T Stadium\nDallas", flag1:"🇵🇾", flag2:"🇦🇺" },
+    ]
+  },
+  E: {
+    matches: [
+      { home: "Almanya", away: "Curaçao", date: "15 Haz Pazar", tsi: "00:00¹", venue: "BMO Field\nToronto", flag1:"🇩🇪", flag2:"🇨🇼" },
+      { home: "Fildişi S.", away: "Ekvador", date: "14 Haz Cumartesi", tsi: "22:00", venue: "NRG Stadium\nHouston", flag1:"🇨🇮", flag2:"🇪🇨" },
+      { home: "Almanya", away: "Fildişi S.", date: "20 Haz Cumartesi", tsi: "23:00", venue: "BMO Field\nToronto", flag1:"🇩🇪", flag2:"🇨🇮" },
+      { home: "Ekvador", away: "Curaçao", date: "21 Haz Pazar", tsi: "01:00¹", venue: "Arrowhead Stad.\nKansas City", flag1:"🇪🇨", flag2:"🇨🇼" },
+      { home: "Ekvador", away: "Almanya", date: "25 Haz Perşembe", tsi: "05:00¹", venue: "Arrowhead Stad.\nKansas City", flag1:"🇪🇨", flag2:"🇩🇪" },
+      { home: "Curaçao", away: "Fildişi S.", date: "25 Haz Perşembe", tsi: "22:00", venue: "NRG Stadium\nHouston", flag1:"🇨🇼", flag2:"🇨🇮" },
+    ]
+  },
+  F: {
+    matches: [
+      { home: "Hollanda", away: "İsveç", date: "16 Haz Pazartesi", tsi: "22:00", venue: "NRG Stadium\nHouston", flag1:"🇳🇱", flag2:"🇸🇪" },
+      { home: "Tunus", away: "Japonya", date: "17 Haz Salı", tsi: "05:00¹", venue: "Estadio BBVA\nMonterrey", flag1:"🇹🇳", flag2:"🇯🇵" },
+      { home: "Hollanda", away: "Tunus", date: "22 Haz Pazartesi", tsi: "03:00¹", venue: "NRG Stadium\nHouston", flag1:"🇳🇱", flag2:"🇹🇳" },
+      { home: "Japonya", away: "İsveç", date: "23 Haz Salı", tsi: "00:00¹", venue: "Rose Bowl\nLos Angeles", flag1:"🇯🇵", flag2:"🇸🇪" },
+      { home: "Japonya", away: "Hollanda", date: "27 Haz Cumartesi", tsi: "00:00¹", venue: "Rose Bowl\nLos Angeles", flag1:"🇯🇵", flag2:"🇳🇱" },
+      { home: "İsveç", away: "Tunus", date: "27 Haz Cumartesi", tsi: "00:00¹", venue: "Estadio BBVA\nMonterrey", flag1:"🇸🇪", flag2:"🇹🇳" },
+    ]
+  },
+  G: {
+    matches: [
+      { home: "Belçika", away: "İran", date: "16 Haz Pazartesi", tsi: "22:00", venue: "SoFi Stadium\nLos Angeles", flag1:"🇧🇪", flag2:"🇮🇷" },
+      { home: "Yeni Zelanda", away: "Mısır", date: "17 Haz Salı", tsi: "02:00¹", venue: "BC Place\nVancouver", flag1:"🇳🇿", flag2:"🇪🇬" },
+      { home: "Belçika", away: "Mısır", date: "22 Haz Pazartesi", tsi: "01:00¹", venue: "SoFi Stadium\nLos Angeles", flag1:"🇧🇪", flag2:"🇪🇬" },
+      { home: "İran", away: "Yeni Zelanda", date: "21 Haz Pazar", tsi: "22:00", venue: "Lincoln Financial\nPhiladelphia", flag1:"🇮🇷", flag2:"🇳🇿" },
+      { home: "İran", away: "Belçika", date: "26 Haz Cuma", tsi: "05:00¹", venue: "Lincoln Financial\nPhiladelphia", flag1:"🇮🇷", flag2:"🇧🇪" },
+      { home: "Mısır", away: "Yeni Zelanda", date: "26 Haz Cuma", tsi: "22:00", venue: "BC Place\nVancouver", flag1:"🇪🇬", flag2:"🇳🇿" },
+    ]
+  },
+  H: {
+    matches: [
+      { home: "İspanya", away: "Yeşilburun", date: "15 Haz Pazar", tsi: "19:00", venue: "Mercedes-Benz\nAtlanta", flag1:"🇪🇸", flag2:"🇨🇻" },
+      { home: "Suudi Arabistan", away: "Uruguay", date: "15 Haz Pazar", tsi: "22:00", venue: "Hard Rock Stad.\nMiami", flag1:"🇸🇦", flag2:"🇺🇾" },
+      { home: "İspanya", away: "Suudi Arabistan", date: "21 Haz Pazar", tsi: "19:00", venue: "Mercedes-Benz\nAtlanta", flag1:"🇪🇸", flag2:"🇸🇦" },
+      { home: "Uruguay", away: "Yeşilburun", date: "20 Haz Cumartesi", tsi: "23:00", venue: "Hard Rock Stad.\nMiami", flag1:"🇺🇾", flag2:"🇨🇻" },
+      { home: "Suudi Arabistan", away: "Yeşilburun", date: "25 Haz Perşembe", tsi: "22:00", venue: "Mercedes-Benz\nAtlanta", flag1:"🇸🇦", flag2:"🇨🇻" },
+      { home: "Uruguay", away: "İspanya", date: "25 Haz Perşembe", tsi: "02:00¹", venue: "Hard Rock Stad.\nMiami", flag1:"🇺🇾", flag2:"🇪🇸" },
+    ]
+  },
+  I: {
+    matches: [
+      { home: "Fransa", away: "Irak", date: "17 Haz Salı", tsi: "22:00", venue: "Lincoln Financial\nPhiladelphia", flag1:"🇫🇷", flag2:"🇮🇶" },
+      { home: "Norveç", away: "Senegal", date: "18 Haz Perşembe", tsi: "03:00¹", venue: "MetLife Stadium\nNew Jersey", flag1:"🇳🇴", flag2:"🇸🇳" },
+      { home: "Fransa", away: "Norveç", date: "23 Haz Salı", tsi: "05:00¹", venue: "MetLife Stadium\nNew Jersey", flag1:"🇫🇷", flag2:"🇳🇴" },
+      { home: "Senegal", away: "Irak", date: "23 Haz Salı", tsi: "22:00", venue: "Rose Bowl\nLos Angeles", flag1:"🇸🇳", flag2:"🇮🇶" },
+      { home: "Senegal", away: "Fransa", date: "27 Haz Cumartesi", tsi: "02:00¹", venue: "Rose Bowl\nLos Angeles", flag1:"🇸🇳", flag2:"🇫🇷" },
+      { home: "Irak", away: "Norveç", date: "27 Haz Cumartesi", tsi: "22:00", venue: "Lincoln Financial\nPhiladelphia", flag1:"🇮🇶", flag2:"🇳🇴" },
+    ]
+  },
+  J: {
+    matches: [
+      { home: "Arjantin", away: "Avusturya", date: "15 Haz Pazar", tsi: "22:00", venue: "AT&T Stadium\nDallas", flag1:"🇦🇷", flag2:"🇦🇹" },
+      { home: "Cezayir", away: "Ürdün", date: "16 Haz Pazartesi", tsi: "06:00¹", venue: "Levi's Stadium\nSan Francisco", flag1:"🇩🇿", flag2:"🇯🇴" },
+      { home: "Arjantin", away: "Cezayir", date: "22 Haz Pazartesi", tsi: "05:00¹", venue: "AT&T Stadium\nDallas", flag1:"🇦🇷", flag2:"🇩🇿" },
+      { home: "Avusturya", away: "Ürdün", date: "21 Haz Pazar", tsi: "07:00¹", venue: "Levi's Stadium\nSan Francisco", flag1:"🇦🇹", flag2:"🇯🇴" },
+      { home: "Avusturya", away: "Arjantin", date: "26 Haz Cuma", tsi: "22:00", venue: "AT&T Stadium\nDallas", flag1:"🇦🇹", flag2:"🇦🇷" },
+      { home: "Ürdün", away: "Cezayir", date: "26 Haz Cuma", tsi: "02:00¹", venue: "NRG Stadium\nHouston", flag1:"🇯🇴", flag2:"🇩🇿" },
+    ]
+  },
+  K: {
+    matches: [
+      { home: "Portekiz", away: "KD Kongo", date: "15 Haz Pazar", tsi: "22:00", venue: "NRG Stadium\nHouston", flag1:"🇵🇹", flag2:"🇨🇩" },
+      { home: "Kolombiya", away: "Özbekistan", date: "16 Haz Pazartesi", tsi: "01:00¹", venue: "Estadio Jalisco\nGuadalajara", flag1:"🇨🇴", flag2:"🇺🇿" },
+      { home: "Portekiz", away: "Özbekistan", date: "20 Haz Cumartesi", tsi: "22:00", venue: "NRG Stadium\nHouston", flag1:"🇵🇹", flag2:"🇺🇿" },
+      { home: "KD Kongo", away: "Kolombiya", date: "21 Haz Pazar", tsi: "05:00¹", venue: "Estadio Jalisco\nGuadalajara", flag1:"🇨🇩", flag2:"🇨🇴" },
+      { home: "KD Kongo", away: "Özbekistan", date: "25 Haz Perşembe", tsi: "23:00", venue: "Mercedes-Benz\nAtlanta", flag1:"🇨🇩", flag2:"🇺🇿" },
+      { home: "Kolombiya", away: "Portekiz", date: "26 Haz Cuma", tsi: "01:00¹", venue: "Estadio Jalisco\nGuadalajara", flag1:"🇨🇴", flag2:"🇵🇹" },
+    ]
+  },
+  L: {
+    matches: [
+      { home: "İngiltere", away: "Hırvatistan", date: "13 Haz Cumartesi", tsi: "23:00", venue: "AT&T Stadium\nDallas", flag1:"🏴󠁧󠁢󠁥󠁮󠁧󠁿", flag2:"🇭🇷" },
+      { home: "Gana", away: "Panama", date: "14 Haz Pazar", tsi: "22:00", venue: "Gillette Stadium\nBoston", flag1:"🇬🇭", flag2:"🇵🇦" },
+      { home: "İngiltere", away: "Gana", date: "19 Haz Cuma", tsi: "23:00", venue: "Gillette Stadium\nBoston", flag1:"🏴󠁧󠁢󠁥󠁮󠁧󠁿", flag2:"🇬🇭" },
+      { home: "Hırvatistan", away: "Panama", date: "19 Haz Cuma", tsi: "02:00¹", venue: "BMO Field\nToronto", flag1:"🇭🇷", flag2:"🇵🇦" },
+      { home: "Hırvatistan", away: "Gana", date: "24 Haz Çarşamba", tsi: "00:00¹", venue: "Lincoln Financial\nPhiladelphia", flag1:"🇭🇷", flag2:"🇬🇭" },
+      { home: "Panama", away: "İngiltere", date: "24 Haz Çarşamba", tsi: "00:00¹", venue: "MetLife Stadium\nNew Jersey", flag1:"🇵🇦", flag2:"🏴󠁧󠁢󠁥󠁮󠁧󠁿" },
+    ]
+  }
+};
+
+const STADIUMS = [
+  { name: "Estadio Azteca", shortName: "AZTECA", city: "Meksika Şehri, Meksika", capacity: "87,523", built: 1966, groups: "Grup A, J", roofType: "open", note: "Tarihin en ikonik stadı! 3. kez WC açılışına ev sahipliği yapıyor.", color: "#22aa44", seed: 11, imgFile: "stadium_azteca.png" },
+  { name: "Estadio Akron", shortName: "AKRON", city: "Guadalajara, Meksika", capacity: "49,850", built: 2010, groups: "Grup A, K", roofType: "open", note: "Atlas ve Chivas'ın ortak stadı. Meksika'nın en modern arenaları.", color: "#cc2244", seed: 22, imgFile: "stadium_akron.png" },
+  { name: "Estadio BBVA", shortName: "BBVA", city: "Monterrey, Meksika", capacity: "53,500", built: 2015, groups: "Grup A, F", roofType: "open", note: "Dağların eteklerinde şık bir arena. Rayados ve Tigres için inşa edildi.", color: "#2244bb", seed: 33, imgFile: "stadium_bbva.png" },
+  { name: "BMO Field", shortName: "BMO FIELD", city: "Toronto, Kanada", capacity: "45,736", built: 2007, groups: "Grup B, E, L", roofType: "open", note: "Toronto FC'nin evi. WC için kapasite genişletildi. Kanada'nın futbol merkezi.", color: "#cc2200", seed: 44, imgFile: "stadium_bmo.webp" },
+  { name: "BC Place", shortName: "BC PLACE", city: "Vancouver, Kanada", capacity: "54,500", built: 1983, groups: "Grup B, G", roofType: "closed", note: "Kapalı çatısıyla benzersiz atmosfer. Vancouver Lions'ın evi.", color: "#2266aa", seed: 55, imgFile: "stadium_bcplace.webp" },
+  { name: "MetLife Stadium", shortName: "METLIFE", city: "East Rutherford, NJ, ABD", capacity: "82,500", built: 2010, groups: "Grup I · FİNAL", roofType: "open", note: "FİNAL SAHASI! Giants ve Jets'in stadyumu. New York'un devasa arenası.", color: "#ddaa00", seed: 66, imgFile: "stadium_metlife.png" },
+  { name: "AT&T Stadium", shortName: "AT&T DALLAS", city: "Arlington TX, ABD", capacity: "80,000", built: 2009, groups: "Grup C, J · Yarıfinal", roofType: "retractable", note: "En çok maç oynanan stat (9 maç)! Cowboys'un evi. İçindeki ekranı efsane.", color: "#2244cc", seed: 77, imgFile: "stadium_attdallas.png" },
+  { name: "Mercedes-Benz Stadium", shortName: "MERCEDES ATL", city: "Atlanta, GA, ABD", capacity: "71,000", built: 2017, groups: "Grup A, H, K · Yarıfinal", roofType: "retractable", note: "Açılıp kapanan çatısıyla spektaküler tasarım. Atlanta United'ın evi.", color: "#aa0000", seed: 88, imgFile: "stadium_mercedes.png" },
+  { name: "Hard Rock Stadium", shortName: "HARD ROCK", city: "Miami, FL, ABD", capacity: "65,326", built: 1987, groups: "Grup C, H, I · 3. yer", roofType: "open", note: "Miami Dolphins ve Miami Open'a ev sahipliği. 3. yer maçı burada.", color: "#008888", seed: 99, imgFile: "stadium_hardrock.png" },
+  { name: "NRG Stadium", shortName: "NRG HOUSTON", city: "Houston, TX, ABD", capacity: "72,220", built: 2002, groups: "Grup E, F, J, K", roofType: "retractable", note: "Retractable roof! Texas Rodeo ve Super Bowl'a ev sahipliği yapmış.", color: "#884400", seed: 111, imgFile: "stadium_nrg.png" },
+  { name: "SoFi Stadium", shortName: "SOFI LA", city: "Los Angeles, CA, ABD", capacity: "70,240", built: 2020, groups: "Grup B, D, G, I", roofType: "closed", note: "LA Rams ve Chargers'ın modern stadı. 2028 Olimpiyat sahası da olacak.", color: "#0044aa", seed: 123, imgFile: "stadium_sofi.png" },
+  { name: "Levi's Stadium", shortName: "LEVI'S SF", city: "Santa Clara, CA, ABD", capacity: "68,500", built: 2014, groups: "Grup B, D, J", roofType: "open", note: "San Francisco 49ers'ın evi. Teknoloji vadisinin kalbi Silicon Valley'de.", color: "#cc3300", seed: 134, imgFile: "stadium_levis.png" },
+  { name: "Lumen Field", shortName: "LUMEN SEATTLE", city: "Seattle, WA, ABD", capacity: "68,740", built: 2002, groups: "Grup B, D", roofType: "open", note: "Seahawks ve Sounders'ın evi. Seattle'ın ikonik çatılı stadyumu.", color: "#005522", seed: 145, imgFile: "stadium_lumen.png" },
+  { name: "Lincoln Financial Field", shortName: "LINCOLN PHILA", city: "Philadelphia, PA, ABD", capacity: "69,328", built: 2003, groups: "Grup C, G, I, L", roofType: "open", note: "Eagles'ın evi. 4 Temmuz 2026 özel kutlamasına ev sahipliği yapacak.", color: "#003388", seed: 156, imgFile: "stadium_lincoln.png" },
+  { name: "Arrowhead Stadium", shortName: "ARROWHEAD KC", city: "Kansas City, MO, ABD", capacity: "72,000", built: 1972, groups: "Grup E, F", roofType: "open", note: "Chiefs'in efsanevi evi. Dünyanın en gürültülü stadyumlarından biri.", color: "#cc2200", seed: 167, imgFile: "stadium_arrowhead.png" },
+  { name: "Gillette Stadium", shortName: "GILLETTE BOS", city: "Boston/Foxborough, MA, ABD", capacity: "65,878", built: 2002, groups: "Grup L", roofType: "open", note: "Patriots ve New England Revolution'ın evi. Tarihi spor şehri Boston.", color: "#003366", seed: 178, imgFile: "stadium_gillette.png" },
+];
+
+// ======================================================
+// RENDER FUNCTIONS
+// ======================================================
+
+function renderStars() {
+  const container = document.getElementById('stars');
+  for (let i = 0; i < 80; i++) {
+    const star = document.createElement('div');
+    star.classList.add('star');
+    const size = Math.random() > 0.8 ? 3 : (Math.random() > 0.5 ? 2 : 1);
+    star.style.cssText = `width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-delay:${Math.random()*3}s;`;
+    container.appendChild(star);
+  }
+}
+
+function renderGroups() {
+  const cont = document.getElementById('groups-container');
+  cont.innerHTML = '';
+  for (const [letter, group] of Object.entries(GROUPS)) {
+    const card = document.createElement('div');
+    card.className = 'group-card';
+    const teams = group.teams.map(t => {
+      const hostBadge = t.host ? '<span class="host-badge">EV SAHİBİ</span>' : '';
+      return `
+        <div class="team-item" onclick="showTeamModal('${letter}','${t.name}')">
+          <span class="flag-box">${t.flag}</span>
+          <span class="team-name">${t.name}${hostBadge}</span>
+          <span class="team-badge continent-badge ${t.continent}">${t.continent}</span>
+        </div>`;
+    }).join('');
+
+    card.innerHTML = `
+      <div class="group-header">
+        <span class="group-letter">G${letter}</span>
+        <div class="group-header-title">GRUP ${letter}<br><span style="color:#aaa">4 TAKIM</span></div>
+      </div>
+      <div class="team-list">${teams}</div>`;
+    cont.appendChild(card);
+  }
+}
+
+function renderFixtures() {
+  const cont = document.getElementById('fixture-container');
+  cont.innerHTML = '';
+  for (const [letter, data] of Object.entries(FIXTURES)) {
+    const group = GROUPS[letter];
+    const matchCards = data.matches.map(m => `
+      <div class="match-card">
+        <div class="match-date">${m.date}<br><span style="color:var(--gold);font-size:9px">🕐 ${m.tsi} TSİ</span></div>
+        <div class="match-teams">
+          <div class="teams-row">
+            <span style="font-size:14px">${m.flag1}</span>
+            <span>${m.home}</span>
+            <span class="match-vs">VS</span>
+            <span>${m.away}</span>
+            <span style="font-size:14px">${m.flag2}</span>
+          </div>
+        </div>
+        <div class="match-venue">
+          <span class="venue-icon">🏟️</span>
+          ${m.venue.replace('\n','<br>')}
+        </div>
+      </div>`).join('');
+
+    const section = document.createElement('div');
+    section.className = 'fixture-group-section';
+    section.innerHTML = `
+      <div class="fixture-group-title">
+        <span style="color:var(--gold);font-size:14px">◆</span>
+        GRUP ${letter}:
+        ${group.teams.map(t => `${t.flag} ${t.name}`).join(' · ')}
+      </div>
+      ${matchCards}
+      <p style="font-size:6px;color:#445;padding:4px 0 0 4px">¹ Ertesi gün sabah TSİ</p>`;
+    cont.appendChild(section);
+  }
+}
+
+function drawPixelStadium(canvas, stadiumData) {
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width = 320;
+  const H = canvas.height = 200;
+
+  // Sky gradient background
+  const sky = ctx.createLinearGradient(0, 0, 0, H);
+  sky.addColorStop(0, '#0a0a2e');
+  sky.addColorStop(0.6, '#1a1a4a');
+  sky.addColorStop(1, '#0d0d20');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, W, H);
+
+  // Stars in sky
+  const rng = mulberry32(stadiumData.seed || 42);
+  for (let i = 0; i < 30; i++) {
+    const sx = rng() * W;
+    const sy = rng() * H * 0.4;
+    const ss = rng() > 0.8 ? 2 : 1;
+    ctx.fillStyle = `rgba(255,255,255,${0.4 + rng() * 0.6})`;
+    ctx.fillRect(Math.floor(sx), Math.floor(sy), ss, ss);
+  }
+
+  // ---- ISOMETRIC PIXEL RENDERER ----
+  // iso: screen x/y from iso grid x,y,z
+  const OX = W / 2;
+  const OY = H * 0.52;
+  const TW = 8;  // tile width half
+  const TH = 4;  // tile height half
+  const TZ = 6;  // z pixel height
+
+  function isoX(gx, gy) { return OX + (gx - gy) * TW; }
+  function isoY(gx, gy, gz) { return OY + (gx + gy) * TH - gz * TZ; }
+
+  // draw iso cube top face
+  function cubeTop(gx, gy, gz, w, d, col) {
+    ctx.fillStyle = col;
+    ctx.beginPath();
+    ctx.moveTo(isoX(gx,     gy),   isoY(gx,     gy,     gz));
+    ctx.lineTo(isoX(gx+w,   gy),   isoY(gx+w,   gy,     gz));
+    ctx.lineTo(isoX(gx+w,   gy+d), isoY(gx+w,   gy+d,   gz));
+    ctx.lineTo(isoX(gx,     gy+d), isoY(gx,     gy+d,   gz));
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // draw iso cube left face (darker)
+  function cubeLeft(gx, gy, gz, h, d, col) {
+    const dark = shadeColor(col, -40);
+    ctx.fillStyle = dark;
+    ctx.beginPath();
+    ctx.moveTo(isoX(gx, gy),   isoY(gx, gy,   gz));
+    ctx.lineTo(isoX(gx, gy+d), isoY(gx, gy+d, gz));
+    ctx.lineTo(isoX(gx, gy+d), isoY(gx, gy+d, gz-h));
+    ctx.lineTo(isoX(gx, gy),   isoY(gx, gy,   gz-h));
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // draw iso cube right face (medium dark)
+  function cubeRight(gx, gy, gz, w, h, col) {
+    const dark = shadeColor(col, -20);
+    ctx.fillStyle = dark;
+    ctx.beginPath();
+    ctx.moveTo(isoX(gx+w, gy),   isoY(gx+w, gy,   gz));
+    ctx.lineTo(isoX(gx+w, gy),   isoY(gx+w, gy,   gz-h));
+    ctx.lineTo(isoX(gx,   gy),   isoY(gx,   gy,   gz-h));
+    ctx.lineTo(isoX(gx,   gy),   isoY(gx,   gy,   gz));
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // Full pixel cube
+  function cube(gx, gy, gz, w, d, h, col) {
+    cubeLeft(gx,    gy, gz, h, d, col);
+    cubeRight(gx+w, gy, gz, w, h, col);
+    cubeTop(gx, gy, gz, w, d, col);
+  }
+
+  function shadeColor(col, amt) {
+    let r = parseInt(col.slice(1,3),16);
+    let g = parseInt(col.slice(3,5),16);
+    let b = parseInt(col.slice(5,7),16);
+    r = Math.max(0,Math.min(255,r+amt));
+    g = Math.max(0,Math.min(255,g+amt));
+    b = Math.max(0,Math.min(255,b+amt));
+    return `rgb(${r},${g},${b})`;
+  }
+
+  function mulberry32(a) {
+    return function() {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      var t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    }
+  }
+
+  const C = stadiumData.color;
+  const roofType = stadiumData.roofType || 'open';
+
+  // ===== GRASS FIELD =====
+  // Field base (dark green)
+  cubeTop(3, 3, 0, 14, 10, '#004411');
+  // Field surface stripes
+  for (let i = 0; i < 7; i++) {
+    cubeTop(3, 3 + i*1.4, 0.1, 14, 0.7, i % 2 === 0 ? '#006622' : '#007733');
+  }
+  // Center line
+  cubeTop(9.5, 3, 0.2, 1, 10, '#00bb55');
+  // Center circle (fake — just 4 lines)
+  cubeTop(8.5, 7, 0.2, 3, 0.2, '#00bb55');
+  cubeTop(8.5, 5.5, 0.2, 3, 0.2, '#00bb55');
+  cubeTop(8.5, 5.5, 0.2, 0.2, 2, '#00bb55');
+  cubeTop(11.3, 5.5, 0.2, 0.2, 2, '#00bb55');
+  // Penalty boxes
+  cubeTop(3, 5.5, 0.2, 2.5, 3, '#00994433');
+  cubeTop(14.5, 5.5, 0.2, 2.5, 3, '#00994433');
+  // Outline
+  cubeTop(3, 3, 0.2, 14, 0.2, '#00bb55');
+  cubeTop(3, 12.8, 0.2, 14, 0.2, '#00bb55');
+  cubeTop(3, 3, 0.2, 0.2, 10, '#00bb55');
+  cubeTop(16.8, 3, 0.2, 0.2, 10, '#00bb55');
+  // Goals
+  cubeTop(2.3, 6.5, 0.3, 0.7, 3, '#ffffff');
+  cubeTop(17, 6.5, 0.3, 0.7, 3, '#ffffff');
+
+  // ===== STANDS =====
+  // Stand rows: near (bottom), far (top), left, right
+  // Each stand has 3 rows of seats going up
+
+  const rowColors = [
+    shadeColor(C, 20),
+    C,
+    shadeColor(C, -20),
+    shadeColor(C, -40),
+  ];
+
+  // BOTTOM stand (near viewer) — 4 rows going up
+  for (let row = 0; row < 4; row++) {
+    cube(2 + row*0.3, 14 + row*0.5, row * 1.5, 16 - row*0.6, 1.2, 1.5, rowColors[row]);
+  }
+
+  // TOP stand (far from viewer)
+  for (let row = 0; row < 4; row++) {
+    cube(2 + row*0.3, 1.2 - row*0.5, row * 1.5, 16 - row*0.6, 1.2, 1.5, rowColors[row]);
+  }
+
+  // LEFT stand
+  for (let row = 0; row < 4; row++) {
+    cube(1.2 - row*0.5, 1.5 + row*0.3, row * 1.5, 1.2, 12 - row*0.6, 1.5, rowColors[row]);
+  }
+
+  // RIGHT stand
+  for (let row = 0; row < 4; row++) {
+    cube(17 + row*0.5, 1.5 + row*0.3, row * 1.5, 1.2, 12 - row*0.6, 1.5, rowColors[row]);
+  }
+
+  // ===== FLOODLIGHT MASTS =====
+  const mastPositions = [[1.5, 1.5], [18, 1.5], [1.5, 14], [18, 14]];
+  mastPositions.forEach(([mx, my]) => {
+    cube(mx, my, 0, 0.4, 0.4, 10, '#888888');
+    cube(mx - 0.4, my - 0.4, 10, 1.2, 1.2, 0.4, '#ffff88');
+    // glow
+    ctx.fillStyle = 'rgba(255,255,150,0.15)';
+    ctx.beginPath();
+    ctx.arc(isoX(mx+0.2, my+0.2), isoY(mx+0.2, my+0.2, 10.4), 14, 0, Math.PI*2);
+    ctx.fill();
+  });
+
+  // ===== ROOF (if applicable) =====
+  if (roofType === 'closed' || roofType === 'retractable') {
+    // Roof frame beams
+    const roofCol = roofType === 'closed' ? '#ccddff88' : '#aabbff55';
+    ctx.fillStyle = roofCol;
+    // roof panels (translucent)
+    cubeTop(2, 1, 8, 16, 13, roofCol);
+    // inner shadow
+    cubeTop(3, 2, 7.9, 14, 11, '#00000033');
+  }
+
+  // ===== CORNER FLAGS =====
+  [[3, 3], [17, 3], [3, 13], [17, 13]].forEach(([fx, fy]) => {
+    cube(fx, fy, 0, 0.15, 0.15, 2, '#dddddd');
+    cubeTop(fx, fy, 2, 0.8, 0.5, '#ff4444');
+  });
+
+  // ===== CROWD DOTS on stands =====
+  const crowdRng = mulberry32(stadiumData.seed || 99);
+  for (let i = 0; i < 80; i++) {
+    const row = Math.floor(crowdRng() * 4);
+    const side = Math.floor(crowdRng() * 4);
+    let gx, gy, gz = row * 1.5 + 1.2;
+    const crowdCols = ['#ff4444','#4444ff','#ffff44','#ffffff','#ff8844','#44ff88'];
+    if (side === 0) { gx = 3 + crowdRng()*12; gy = 14.5 + row*0.5; }
+    else if (side === 1) { gx = 3 + crowdRng()*12; gy = 1.5 - row*0.5; }
+    else if (side === 2) { gx = 1.5 - row*0.5; gy = 2 + crowdRng()*10; }
+    else { gx = 17.5 + row*0.5; gy = 2 + crowdRng()*10; }
+    const sc = Math.floor(crowdRng() * crowdCols.length);
+    ctx.fillStyle = crowdCols[sc];
+    const px = isoX(gx, gy);
+    const py = isoY(gx, gy, gz);
+    ctx.fillRect(Math.floor(px), Math.floor(py), 2, 2);
+  }
+
+  // Name label at bottom
+  ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  ctx.fillRect(0, H - 22, W, 22);
+  ctx.fillStyle = '#ffd700';
+  ctx.font = '700 9px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText(stadiumData.shortName || stadiumData.name, W/2, H - 8);
+}
+
+function renderStadiums() {
+  const cont = document.getElementById('stadiums-container');
+  cont.innerHTML = '';
+  const storedPhotos = getStoredPhotos();
+
+  STADIUMS.forEach(s => {
+    const card = document.createElement('div');
+    card.className = 'stadium-card';
+    const canvasId  = 'canvas_' + s.name.replace(/\W+/g,'_');
+    const stadiumKey = s.name.replace(/\W+/g,'_').toLowerCase();
+    const roofLabel  = s.roofType === 'closed' ? '🔒 Kapalı Çatı' : s.roofType === 'retractable' ? '🔄 Açılır Çatı' : '🌤️ Açık';
+
+    // Öncelik: 1) localStorage'daki foto, 2) imgFile, 3) canvas
+    const storedImg = storedPhotos[stadiumKey];
+    const hasRealImg = storedImg || s.imgFile;
+    const imgSrc     = storedImg || s.imgFile || null;
+
+    const imgEl = hasRealImg
+      ? `<img src="${imgSrc}" style="width:100%;height:180px;object-fit:cover;image-rendering:pixelated;display:block;" alt="${s.name}">`
+      : `<canvas id="${canvasId}" class="pixel-stadium" style="image-rendering:pixelated;width:100%;height:180px"></canvas>`;
+
+    // Admin upload paneli
+    const uploadId = 'upload_' + stadiumKey;
+    const adminPanel = isAdmin ? `
+      <div class="foto-upload-panel visible">
+        <label class="foto-upload-label">📸 STADYUM FOTOĞRAFI YÜKLE:</label>
+        <input class="foto-upload-input" type="file" accept="image/png,image/jpeg,image/webp" id="${uploadId}">
+        ${storedImg ? `<button class="foto-remove-btn" onclick="removePhoto('${stadiumKey}')">🗑 FOTOĞRAFI SİL</button>` : ''}
+      </div>` : '';
+
+    card.innerHTML = `
+      <div class="stadium-pixel-art" style="position:relative">
+        ${imgEl}
+        ${isAdmin ? `<div style="position:absolute;top:4px;left:4px"><span class="admin-badge">ADMİN MODU</span></div>` : ''}
+      </div>
+      <div class="stadium-card-body">
+        <div class="stadium-name">🏟️ ${s.name}</div>
+        <div class="stadium-info">
+          📍 <span>${s.city}</span><br>
+          👥 Kapasite: <span>${s.capacity}</span><br>
+          📅 İnşa: <span>${s.built}</span><br>
+          🏠 Çatı: <span>${roofLabel}</span><br>
+          ⚽ Gruplar: <span>${s.groups}</span><br>
+          <div style="margin-top:6px;color:#778;line-height:1.6">${s.note}</div>
+        </div>
+        ${adminPanel}
+      </div>`;
+    cont.appendChild(card);
+
+    // Upload input event listener
+    if (isAdmin) {
+      const uploadInput = document.getElementById('upload_' + stadiumKey);
+      if (uploadInput) {
+        uploadInput.addEventListener('change', function() {
+          handlePhotoUpload(this, stadiumKey);
+        });
+      }
+    }
+
+    if (!hasRealImg) {
+      setTimeout(() => {
+        const canvas = document.getElementById(canvasId);
+        if (canvas) drawPixelStadium(canvas, s);
+      }, 80);
+    }
+  });
+}
+
+function renderAbout() {
+  const cont = document.getElementById('about-container');
+  cont.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:16px">
+
+      <div class="group-card" style="padding:16px">
+        <div style="font-size:32px;text-align:center;margin-bottom:12px;animation:bounce 1s steps(2) infinite">🌍</div>
+        <div style="font-size:9px;color:var(--gold);margin-bottom:10px">TURNUVA BİLGİSİ</div>
+        <div style="font-size:7px;color:var(--white);line-height:2">
+          📅 11 Haziran - 19 Temmuz 2026<br>
+          🏆 23. FIFA Dünya Kupası<br>
+          🌎 ABD + Kanada + Meksika<br>
+          ⚽ 48 Takım (rekor!)<br>
+          📊 12 Grup / 104 Maç<br>
+          🏟️ 16 Stadyum / 16 Şehir<br>
+          🆕 İlk kez 3 ülke ev sahipliği<br>
+          🆕 İlk kez 48 takım<br>
+          🆕 İlk kez Tur-32 fazı
+        </div>
+      </div>
+
+      <div class="group-card" style="padding:16px">
+        <div style="font-size:32px;text-align:center;margin-bottom:12px">🏆</div>
+        <div style="font-size:9px;color:var(--gold);margin-bottom:10px">ŞAMPİYONLAR</div>
+        <div style="font-size:7px;color:var(--white);line-height:2">
+          🇧🇷 Brezilya — 5 şampiyonluk<br>
+          🇩🇪 Almanya — 4 şampiyonluk<br>
+          🇮🇹 İtalya — 4 şampiyonluk<br>
+          🇦🇷 Arjantin — 3 şampiyonluk<br>
+          🇫🇷 Fransa — 2 şampiyonluk<br>
+          🇺🇾 Uruguay — 2 şampiyonluk<br>
+          🇬🇧 İngiltere — 1 şampiyonluk<br>
+          🇪🇸 İspanya — 1 şampiyonluk<br>
+          <span style="color:var(--cyan)">★ Arjantin mevcut şampiyon</span>
+        </div>
+      </div>
+
+      <div class="group-card" style="padding:16px">
+        <div style="font-size:32px;text-align:center;margin-bottom:12px">🇹🇷</div>
+        <div style="font-size:9px;color:var(--gold);margin-bottom:10px">TÜRKİYE'NİN YOLU</div>
+        <div style="font-size:7px;color:var(--white);line-height:2">
+          <span style="color:var(--green)">✓ PLAY-OFF ŞAMPIYONU!</span><br>
+          Kosova'yı play-off finalinde yendi<br>
+          Grup D'ye dahil oldu<br><br>
+          <span style="color:var(--cyan)">Grup D Rakipleri:</span><br>
+          🇺🇸 ABD (ev sahibi)<br>
+          🇵🇾 Paraguay<br>
+          🇦🇺 Avustralya<br><br>
+          <span style="color:var(--gold)">Son katılım: 2002 (3. lük!)</span><br>
+          <span style="color:var(--red)">Arda Güler nesliyle umutlar yüksek!</span>
+        </div>
+      </div>
+
+      <div class="group-card" style="padding:16px">
+        <div style="font-size:32px;text-align:center;margin-bottom:12px">📋</div>
+        <div style="font-size:9px;color:var(--gold);margin-bottom:10px">FORMAT</div>
+        <div style="font-size:7px;color:var(--white);line-height:2">
+          GRUP AŞAMASI: 11-27 Haz<br>
+          → Her gruptan 2 takım geçer<br>
+          → En iyi 8 üçüncüler de geçer<br><br>
+          TUR-32: 28 Haz - 3 Tem<br>
+          TUR-16: 4 - 7 Temmuz<br>
+          ÇEYREKFİNAL: 9 - 11 Tem<br>
+          YARIFIKAL: 14 - 15 Tem<br>
+          3. YER MAÇI: 18 Temmuz<br>
+          <span style="color:var(--gold)">FİNAL: 19 TEMMUZ</span>
+        </div>
+      </div>
+
+      <div class="group-card" style="padding:16px">
+        <div style="font-size:32px;text-align:center;margin-bottom:12px">🌟</div>
+        <div style="font-size:9px;color:var(--gold);margin-bottom:10px">İZLENECEK YILDIZLAR</div>
+        <div style="font-size:7px;color:var(--white);line-height:2">
+          🐐 Lionel Messi (ARG)<br>
+          🐐 Cristiano Ronaldo (POR)<br>
+          ⚡ Kylian Mbappé (FRA)<br>
+          💫 Erling Haaland (NOR)<br>
+          🌟 Vinicius Junior (BRA)<br>
+          ✨ Jude Bellingham (ENG)<br>
+          🔥 Lamine Yamal (ESP)<br>
+          🇹🇷 Arda Güler (TUR)<br>
+          ⚽ Jamal Musiala (GER)<br>
+          🎯 Harry Kane (ENG)
+        </div>
+      </div>
+
+      <div class="group-card" style="padding:16px">
+        <div style="font-size:32px;text-align:center;margin-bottom:12px">🆕</div>
+        <div style="font-size:9px;color:var(--gold);margin-bottom:10px">İLK KEZ KATILAN ÜLKELER</div>
+        <div style="font-size:7px;color:var(--white);line-height:2">
+          🇨🇼 Curaçao (En küçük nüfus!)<br>
+          🇨🇻 Yeşilburun Adaları<br>
+          🇯🇴 Ürdün<br>
+          🇺🇿 Özbekistan<br><br>
+          <span style="color:var(--cyan)">Uzun aranın ardından dönenler:</span><br>
+          🇭🇹 Haiti (1974'ten beri ilk)<br>
+          🇨🇩 KD Kongo (52 yıl aradan sonra)<br>
+          🇮🇶 Irak (40 yıl aradan sonra)
+        </div>
+      </div>
+
+    </div>`;
+}
+
+function showTeamModal(groupLetter, teamName) {
+  const group = GROUPS[groupLetter];
+  const team = group.teams.find(t => t.name === teamName);
+  if (!team) return;
+
+  const continentNames = {
+    UEFA: "Avrupa", CONMEBOL: "Güney Amerika", AFC: "Asya",
+    CAF: "Afrika", CONCACAF: "Kuzey/Orta Amerika", OFC: "Okyanusya"
+  };
+
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-flag">${team.flag}</div>
+    <div class="modal-body">
+      <div class="modal-country-name">${team.name}</div>
+      <div class="info-row">
+        <span class="info-label">🌍 KITASI:</span>
+        <span class="info-val"><span class="continent-badge ${team.continent}">${team.continent}</span> ${continentNames[team.continent]}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">🏆 EN İYİSİ:</span>
+        <span class="info-val">${team.wc_best}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">📊 KATILIM:</span>
+        <span class="info-val">${team.appearances}. Dünya Kupası katılımı</span>
+      </div>
+      ${team.host ? `<div class="info-row"><span class="info-label">🏠 EV SAHİBİ:</span><span class="info-val" style="color:var(--gold)">✓ 2026 Ev Sahibi Ülke!</span></div>` : ''}
+      <div class="info-row">
+        <span class="info-label">📍 GRUP:</span>
+        <span class="info-val">Grup ${groupLetter}</span>
+      </div>
+      <div class="achievement-box">
+        <h4>📖 BİLGİ KARTI</h4>
+        ${team.info}
+      </div>
+      <div style="margin-top:12px;font-size:7px;color:var(--grey)">
+        <div style="color:var(--cyan);margin-bottom:6px">GRUP ${groupLetter} RAKİPLERİ:</div>
+        ${group.teams.filter(t => t.name !== team.name).map(t => `<span style="margin-right:8px">${t.flag} ${t.name}</span>`).join('')}
+      </div>
+    </div>`;
+
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('modal') || e.currentTarget.tagName === 'BUTTON') {
+    document.getElementById('modal').classList.remove('open');
+  }
+}
+
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + pageId).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ======================================================
+// CANLI SKOR SİSTEMİ — football-data.org
+// ======================================================
+
+const FD_API_KEY = 'd333b8de366e49a18ce2ec66c17d79d9';
+const FD_WC_ID   = 2000; // FIFA World Cup competition ID
+
+let liveScoreInterval = null;
+let countdownInterval = null;
+let lastUpdated = null;
+
+const WC_START = new Date('2026-06-11T19:00:00Z');
+const WC_END   = new Date('2026-07-19T20:00:00Z');
+
+function getCountdown() {
+  const now  = new Date();
+  const diff = WC_START - now;
+  if (diff <= 0) return null;
+  return {
+    days:    Math.floor(diff / (1000*60*60*24)),
+    hours:   Math.floor((diff % (1000*60*60*24)) / (1000*60*60)),
+    minutes: Math.floor((diff % (1000*60*60))    / (1000*60)),
+    seconds: Math.floor((diff % (1000*60))        / 1000),
+  };
+}
+
+async function loadLiveScores() {
+  const cont = document.getElementById('live-score-container');
+  const now  = new Date();
+
+  if (liveScoreInterval) { clearInterval(liveScoreInterval); liveScoreInterval = null; }
+  if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+
+  if (now > WC_END) {
+    cont.innerHTML = `<div class="no-matches-box"><span class="big-icon">🏆</span><h3>TURNUVA SONA ERDİ</h3><p>2026 FIFA Dünya Kupası 19 Temmuz'da tamamlandı.</p></div>`;
+    return;
+  }
+
+  cont.innerHTML = `
+    <div class="live-header-bar">
+      <div><span class="live-dot"></span><span style="font-size:8px;color:var(--red)">CANLI TAKİP</span></div>
+      <span class="live-status-text" id="live-status-text">Yükleniyor...</span>
+      <button class="live-refresh-btn" onclick="loadLiveScores()">↻ YENİLE</button>
+    </div>
+    <div style="text-align:center;padding:30px;font-size:8px;color:var(--grey)">⏳ VERİ ÇEKILIYOR...</div>`;
+
+  try {
+    // TheSportsDB - FIFA World Cup 2026 (league id: 4328, sezon 2025-2026)
+    // Bu API CORS'u destekliyor, tarayıcıdan çalışıyor!
+    const today = now.toISOString().split('T')[0];
+    const yesterday = new Date(now.getTime() - 86400000).toISOString().split('T')[0];
+
+    // Bugünün maçları
+    const [resLive, resYesterday, resToday] = await Promise.allSettled([
+      fetch(`https://www.thesportsdb.com/api/v1/json/3/liveevents.php`),
+      fetch(`https://www.thesportsdb.com/api/v1/json/3/eventsday.php?d=${yesterday}&l=FIFA+World+Cup`),
+      fetch(`https://www.thesportsdb.com/api/v1/json/3/eventsday.php?d=${today}&l=FIFA+World+Cup`),
+    ]);
+
+    let liveEvents = [];
+    let allEvents = [];
+
+    if (resLive.status === 'fulfilled' && resLive.value.ok) {
+      const d = await resLive.value.json();
+      if (d.events) liveEvents = d.events.filter(e =>
+        e.strLeague && e.strLeague.toLowerCase().includes('world cup'));
+    }
+
+    if (resYesterday.status === 'fulfilled' && resYesterday.value.ok) {
+      const d = await resYesterday.value.json();
+      if (d.events) allEvents = [...allEvents, ...d.events];
+    }
+
+    if (resToday.status === 'fulfilled' && resToday.value.ok) {
+      const d = await resToday.value.json();
+      if (d.events) allEvents = [...allEvents, ...d.events];
+    }
+
+    // Eğer hiç veri yoksa sezon maçlarını çek
+    if (allEvents.length === 0 && liveEvents.length === 0) {
+      const resSeason = await fetch(`https://www.thesportsdb.com/api/v1/json/3/eventsseason.php?id=4328&s=2025-2026`);
+      if (resSeason.ok) {
+        const d = await resSeason.json();
+        if (d.events) allEvents = d.events;
+      }
+    }
+
+    renderSportsDBScores(cont, liveEvents, allEvents, now);
+
+    liveScoreInterval = setInterval(() => {
+      if (document.getElementById('page-canli').classList.contains('active')) loadLiveScores();
+    }, 10 * 1000);
+
+  } catch(err) {
+    renderApiError(cont, err.message);
+  }
+}
+
+function renderSportsDBScores(cont, liveEvents, allEvents, now) {
+  const todayStr = now.toISOString().split('T')[0];
+  const yesterdayStr = new Date(now.getTime()-86400000).toISOString().split('T')[0];
+  const tomorrowStr = new Date(now.getTime()+86400000).toISOString().split('T')[0];
+
+  // Geçmiş maçlar (tamamlanan)
+  const finished = allEvents.filter(e =>
+    e.strStatus === 'Match Finished' || e.intHomeScore !== null
+  ).slice(-12).reverse();
+
+  // Yaklaşan maçlar
+  const upcoming = allEvents.filter(e =>
+    e.strStatus === 'Not Started' && e.intHomeScore === null &&
+    (e.dateEvent >= todayStr)
+  ).slice(0, 8);
+
+  const lastUpdated = new Date().toLocaleTimeString('tr-TR');
+  const refreshInfo = liveEvents.length > 0 ? '⚡ 10sn\'de yenilenir' : '🕐 10sn\'de yenilenir';
+
+  cont.innerHTML = `
+    <div class="live-header-bar">
+      <div><span class="live-dot"></span><span style="font-size:8px;color:var(--red)">CANLI TAKİP</span></div>
+      <span class="live-status-text" id="live-status-text">Güncellendi: ${lastUpdated} · ${refreshInfo}</span>
+      <button class="live-refresh-btn" onclick="loadLiveScores()">↻ YENİLE</button>
+    </div>
+
+    ${liveEvents.length > 0 ? `
+      <div class="score-section-title" style="border-left-color:var(--red)">🔴 DEVAM EDEN MAÇLAR (${liveEvents.length})</div>
+      ${liveEvents.map(e => renderSportsDBCard(e, true)).join('')}
+    ` : ''}
+
+    <div class="score-section-title">✅ SON SONUÇLAR</div>
+    ${finished.length > 0
+      ? finished.map(e => renderSportsDBCard(e, false)).join('')
+      : '<div style="padding:16px;font-size:7px;color:var(--grey);text-align:center">Henüz tamamlanan maç yok.<br><br>İlk maç: 🇲🇽 Meksika vs Güney Afrika 🇿🇦<br>11 Haziran 22:00 TSİ</div>'}
+
+    ${upcoming.length > 0 ? `
+      <div class="score-section-title">📅 YAKLAŞAN MAÇLAR</div>
+      ${upcoming.map(e => renderSportsDBUpcoming(e)).join('')}
+    ` : ''}`;
+}
+
+function renderSportsDBCard(e, isLive) {
+  const hs = e.intHomeScore ?? '-';
+  const as = e.intAwayScore ?? '-';
+  const fH = getFlag(e.strHomeTeam);
+  const fA = getFlag(e.strAwayTeam);
+  const dateStr = e.dateEvent || '';
+  const min = e.strProgress || '';
+  return `
+    <div class="score-card ${isLive ? 'live-now' : ''}">
+      <div class="score-team">
+        <span class="score-team-flag">${fH}</span>
+        <span class="score-team-name">${e.strHomeTeam || '?'}</span>
+      </div>
+      <div class="score-middle">
+        <div class="score-result">${hs} - ${as}</div>
+        ${isLive
+          ? `<span class="score-minute">⏱ ${min}</span>`
+          : `<span class="score-time">${dateStr}</span>`}
+      </div>
+      <div class="score-team right">
+        <span class="score-team-flag">${fA}</span>
+        <span class="score-team-name">${e.strAwayTeam || '?'}</span>
+      </div>
+    </div>`;
+}
+
+function renderSportsDBUpcoming(e) {
+  const fH = getFlag(e.strHomeTeam);
+  const fA = getFlag(e.strAwayTeam);
+  let timeStr = '';
+  if (e.strTime) {
+    const [hh,mm] = e.strTime.replace('Z','').split(':').map(Number);
+    const tsiH = (hh + 3) % 24;
+    timeStr = `${String(tsiH).padStart(2,'0')}:${String(mm||0).padStart(2,'0')} TSİ`;
+  }
+  return `
+    <div class="score-card">
+      <div class="score-team">
+        <span class="score-team-flag">${fH}</span>
+        <span class="score-team-name">${e.strHomeTeam || '?'}</span>
+      </div>
+      <div class="score-middle">
+        <div class="score-result" style="font-size:14px;color:var(--cyan)">VS</div>
+        <span class="score-time">${e.dateEvent || ''}<br>${timeStr}</span>
+      </div>
+      <div class="score-team right">
+        <span class="score-team-flag">${fA}</span>
+        <span class="score-team-name">${e.strAwayTeam || '?'}</span>
+      </div>
+    </div>`;
+}
+
+function renderCountdown(cont) {
+  const cd = getCountdown();
+  if (!cd) { loadLiveScores(); return; }
+
+  // Sonraki maç: Meksika vs Güney Afrika
+  cont.innerHTML = `
+    <div class="no-matches-box">
+      <span class="big-icon">⏳</span>
+      <h3>TURNUVA HENÜZ BAŞLAMADI</h3>
+      <p>İlk maç: MEKSİKA 🇲🇽 vs GÜNEY AFRİKA 🇿🇦<br>
+         11 Haziran 2026 — Estadio Azteca — TSİ 22:00</p>
+    </div>
+
+    <div class="next-match-card">
+      <div class="next-match-title">⏱ TURNUVAYA KALAN SÜRE</div>
+      <div class="countdown-box">
+        <div class="countdown-unit">
+          <span class="countdown-num" id="cd-days">${String(cd.days).padStart(3,'0')}</span>
+          <span class="countdown-lbl">GÜN</span>
+        </div>
+        <div class="countdown-unit">
+          <span class="countdown-num" id="cd-hours">${String(cd.hours).padStart(2,'0')}</span>
+          <span class="countdown-lbl">SAAT</span>
+        </div>
+        <div class="countdown-unit">
+          <span class="countdown-num" id="cd-mins">${String(cd.minutes).padStart(2,'0')}</span>
+          <span class="countdown-lbl">DAKİKA</span>
+        </div>
+        <div class="countdown-unit">
+          <span class="countdown-num" id="cd-secs">${String(cd.seconds).padStart(2,'0')}</span>
+          <span class="countdown-lbl">SANİYE</span>
+        </div>
+      </div>
+      <div class="next-match-info">
+        📅 Grup Aşaması: 11 Haziran — 27 Haziran 2026<br>
+        🏆 Final: 19 Temmuz 2026 — MetLife Stadium, New Jersey<br>
+        ⚽ 48 Takım · 104 Maç · 16 Stadyum · 3 Ülke<br>
+        🇹🇷 Türkiye: Grup D — ABD, Paraguay, Avustralya ile
+      </div>
+    </div>
+
+    <div style="margin-top:16px">
+      <div class="score-section-title">📅 İLK HAFTA PROGRAMI (TSİ)</div>
+      ${[
+        {d:'11 Haz Perş', t:'22:00', h:'🇲🇽 Meksika', a:'Güney Afrika 🇿🇦', v:'Azteca'},
+        {d:'11 Haz Perş', t:'05:00¹', h:'🇰🇷 G.Kore', a:'Çekya 🇨🇿', v:'Akron'},
+        {d:'12 Haz Cum', t:'22:00', h:'🇨🇦 Kanada', a:'Bosna-Hersek 🇧🇦', v:'Toronto'},
+        {d:'12 Haz Cum', t:'22:00', h:'🇺🇸 ABD', a:'Paraguay 🇵🇾', v:'Los Angeles'},
+        {d:'13 Haz Cts', t:'22:00', h:'🇶🇦 Katar', a:'İsviçre 🇨🇭', v:'San Francisco'},
+        {d:'13 Haz Cts', t:'23:00', h:'🏴󠁧󠁢󠁥󠁮󠁧󠁿 İngiltere', a:'Hırvatistan 🇭🇷', v:'Dallas'},
+        {d:'13 Haz Cts', t:'22:00', h:'🇧🇷 Brezilya', a:'Fas 🇲🇦', v:'Los Angeles'},
+        {d:'13 Haz Cts', t:'05:00¹', h:'🇦🇺 Avustralya', a:'Türkiye 🇹🇷', v:'Seattle'},
+      ].map(m => `
+        <div class="score-card">
+          <div class="score-team"><span class="score-team-flag">${m.h.split(' ')[0]}</span><span class="score-team-name">${m.h.substring(m.h.indexOf(' ')+1)}</span></div>
+          <div class="score-middle">
+            <div class="score-result" style="font-size:11px;color:var(--cyan)">VS</div>
+            <span class="score-time">${m.d}<br>🕐 ${m.t} TSİ<br>${m.v}</span>
+          </div>
+          <div class="score-team right"><span class="score-team-flag">${m.a.split(' ').pop()}</span><span class="score-team-name">${m.a.substring(0, m.a.lastIndexOf(' '))}</span></div>
+        </div>`).join('')}
+      <p style="font-size:6px;color:#445;padding:4px">¹ Ertesi gün sabah TSİ</p>
+    </div>`;
+}
+
+function renderScores(cont, matches) {
+  const live     = matches.filter(m => ['IN_PLAY','HALFTIME','PAUSED'].includes(m.status));
+  const finished = matches.filter(m => m.status === 'FINISHED').slice(-12).reverse();
+  const upcoming = matches.filter(m => ['TIMED','SCHEDULED'].includes(m.status)).slice(0, 8);
+
+  lastUpdated = new Date();
+  const updStr = lastUpdated.toLocaleTimeString('tr-TR');
+  const refreshInfo = '⚡ 10sn\'de yenilenir';
+
+  cont.innerHTML = `
+    <div class="live-header-bar">
+      <div><span class="live-dot"></span><span style="font-size:8px;color:var(--red)">CANLI TAKİP</span></div>
+      <span class="live-status-text" id="live-status-text">Son güncelleme: ${updStr} · ${refreshInfo}</span>
+      <button class="live-refresh-btn" onclick="loadLiveScores()">↻ YENİLE</button>
+    </div>
+
+    ${live.length > 0 ? `
+      <div class="score-section-title" style="border-left-color:var(--red)">🔴 DEVAM EDEN MAÇLAR (${live.length})</div>
+      ${live.map(m => renderMatchCard(m, true)).join('')}
+    ` : ''}
+
+    <div class="score-section-title">✅ SON SONUÇLAR</div>
+    ${finished.length > 0
+      ? finished.map(m => renderMatchCard(m, false)).join('')
+      : '<div style="padding:12px;font-size:7px;color:var(--grey)">Henüz tamamlanan maç yok.</div>'}
+
+    ${upcoming.length > 0 ? `
+      <div class="score-section-title">📅 YAKLAŞAN MAÇLAR</div>
+      ${upcoming.map(m => renderUpcomingCard(m)).join('')}
+    ` : ''}`;
+}
+
+function renderMatchCard(m, isLive) {
+  const hs  = m.score?.fullTime?.home ?? m.score?.halfTime?.home ?? '-';
+  const as  = m.score?.fullTime?.away ?? m.score?.halfTime?.away ?? '-';
+  const min = m.minute ? `${m.minute}'` : (m.status === 'HALFTIME' ? 'DEVRE' : '');
+  const fH  = getFlag(m.homeTeam?.name);
+  const fA  = getFlag(m.awayTeam?.name);
+  const dateStr = m.utcDate
+    ? new Date(m.utcDate).toLocaleDateString('tr-TR',{day:'numeric',month:'short'})
+    : '';
+  return `
+    <div class="score-card ${isLive ? 'live-now' : ''}">
+      <div class="score-team">
+        <span class="score-team-flag">${fH}</span>
+        <span class="score-team-name">${m.homeTeam?.shortName || m.homeTeam?.name || '?'}</span>
+      </div>
+      <div class="score-middle">
+        <div class="score-result">${hs} - ${as}</div>
+        ${isLive ? `<span class="score-minute">⏱ ${min}</span>` : `<span class="score-time">${dateStr}</span>`}
+      </div>
+      <div class="score-team right">
+        <span class="score-team-flag">${fA}</span>
+        <span class="score-team-name">${m.awayTeam?.shortName || m.awayTeam?.name || '?'}</span>
+      </div>
+    </div>`;
+}
+
+function renderUpcomingCard(m) {
+  const fH = getFlag(m.homeTeam?.name);
+  const fA = getFlag(m.awayTeam?.name);
+  let timeStr = '';
+  if (m.utcDate) {
+    const d   = new Date(m.utcDate);
+    const tsi = new Date(d.getTime() + 3*3600*1000);
+    const hh  = String(tsi.getUTCHours()).padStart(2,'0');
+    const mm  = String(tsi.getUTCMinutes()).padStart(2,'0');
+    const day = tsi.toLocaleDateString('tr-TR',{day:'numeric',month:'short',timeZone:'UTC'});
+    timeStr = `${day} · ${hh}:${mm} TSİ`;
+  }
+  return `
+    <div class="score-card">
+      <div class="score-team">
+        <span class="score-team-flag">${fH}</span>
+        <span class="score-team-name">${m.homeTeam?.shortName || m.homeTeam?.name || '?'}</span>
+      </div>
+      <div class="score-middle">
+        <div class="score-result" style="font-size:14px;color:var(--cyan)">VS</div>
+        <span class="score-time">${timeStr}</span>
+      </div>
+      <div class="score-team right">
+        <span class="score-team-flag">${fA}</span>
+        <span class="score-team-name">${m.awayTeam?.shortName || m.awayTeam?.name || '?'}</span>
+      </div>
+    </div>`;
+}
+
+function renderApiError(cont, msg) {
+  cont.innerHTML = `
+    <div class="live-header-bar">
+      <div><span class="live-dot" style="background:#666"></span><span style="font-size:7px;color:#666">OFFLİNE</span></div>
+      <button class="live-refresh-btn" onclick="loadLiveScores()">↻ TEKRAR DENE</button>
+    </div>
+    <div class="api-error-box">
+      ⚠️ VERİ ALINAMADI<br><br>
+      Sebep: ${msg}<br><br>
+      Turnuva 11 Haziran 2026'da başlıyor.<br>
+      Netlify'e yükleyince CORS kısıtlaması olmadığı için API düzgün çalışacak.<br>
+      Şu an geri sayım gösteriliyor:
+    </div>`;
+
+  // Geri sayım göster
+  const cd = getCountdown();
+  if (cd) {
+    const cdBox = document.createElement('div');
+    cont.appendChild(cdBox);
+    renderCountdown({ innerHTML: '', set innerHTML(v) { cdBox.innerHTML = v; } });
+    cdBox.innerHTML = cdBox.innerHTML || '';
+    // Sadece countdown kısmını ekle
+    const cdElem = document.createElement('div');
+    cdElem.innerHTML = `
+      <div class="next-match-card" style="margin-top:12px">
+        <div class="next-match-title">⏱ TURNUVAYA KALAN SÜRE</div>
+        <div class="countdown-box" id="err-countdown">
+          <div class="countdown-unit"><span class="countdown-num">${String(cd.days).padStart(3,'0')}</span><span class="countdown-lbl">GÜN</span></div>
+          <div class="countdown-unit"><span class="countdown-num">${String(cd.hours).padStart(2,'0')}</span><span class="countdown-lbl">SAAT</span></div>
+          <div class="countdown-unit"><span class="countdown-num">${String(cd.minutes).padStart(2,'0')}</span><span class="countdown-lbl">DAKİKA</span></div>
+          <div class="countdown-unit"><span class="countdown-num" id="err-sec">${String(cd.seconds).padStart(2,'0')}</span><span class="countdown-lbl">SANİYE</span></div>
+        </div>
+      </div>`;
+    cont.appendChild(cdElem);
+  }
+}
+
+// Takım adından bayrak emojisi çıkar
+function getFlag(teamName) {
+  const map = {
+    'Mexico':'🇲🇽','South Africa':'🇿🇦','Korea Republic':'🇰🇷','South Korea':'🇰🇷',
+    'Czechia':'🇨🇿','Czech Republic':'🇨🇿','Canada':'🇨🇦','Bosnia and Herzegovina':'🇧🇦',
+    'Qatar':'🇶🇦','Switzerland':'🇨🇭','Brazil':'🇧🇷','Morocco':'🇲🇦','Haiti':'🇭🇹',
+    'Scotland':'🏴󠁧󠁢󠁳󠁣󠁴󠁿','United States':'🇺🇸','USA':'🇺🇸','Paraguay':'🇵🇾',
+    'Australia':'🇦🇺','Turkey':'🇹🇷','Türkiye':'🇹🇷','Germany':'🇩🇪','Curacao':'🇨🇼',
+    'Ivory Coast':'🇨🇮',"Côte d'Ivoire":'🇨🇮','Ecuador':'🇪🇨','Netherlands':'🇳🇱',
+    'Japan':'🇯🇵','Sweden':'🇸🇪','Tunisia':'🇹🇳','Belgium':'🇧🇪','Iran':'🇮🇷',
+    'New Zealand':'🇳🇿','Egypt':'🇪🇬','Spain':'🇪🇸','Cape Verde':'🇨🇻',
+    'Saudi Arabia':'🇸🇦','Uruguay':'🇺🇾','France':'🇫🇷','Senegal':'🇸🇳',
+    'Iraq':'🇮🇶','Norway':'🇳🇴','Argentina':'🇦🇷','Algeria':'🇩🇿',
+    'Austria':'🇦🇹','Jordan':'🇯🇴','Portugal':'🇵🇹','DR Congo':'🇨🇩',
+    'Uzbekistan':'🇺🇿','Colombia':'🇨🇴','England':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','Croatia':'🇭🇷',
+    'Ghana':'🇬🇭','Panama':'🇵🇦',
+  };
+  for (const [k,v] of Object.entries(map)) {
+    if (teamName && teamName.toLowerCase().includes(k.toLowerCase())) return v;
+  }
+  return '🏳️';
+}
+
+// ======================================================
+// ADMİN SİSTEMİ
+// ======================================================
+
+const ADMIN_USER = 'ultrakalkan';
+const ADMIN_PASS = 'bulo8826';
+let isAdmin = false;
+
+function toggleAdminLogin() {
+  if (isAdmin) {
+    doAdminLogout();
+  } else {
+    document.getElementById('admin-login-overlay').classList.add('open');
+    setTimeout(() => document.getElementById('admin-user').focus(), 100);
+  }
+}
+
+function closeAdminLogin() {
+  document.getElementById('admin-login-overlay').classList.remove('open');
+  document.getElementById('admin-error').textContent = '';
+  document.getElementById('admin-user').value = '';
+  document.getElementById('admin-pass').value = '';
+}
+
+function doAdminLogin() {
+  const u = document.getElementById('admin-user').value.trim();
+  const p = document.getElementById('admin-pass').value;
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
+    isAdmin = true;
+    closeAdminLogin();
+    const btn = document.getElementById('admin-btn');
+    btn.classList.add('logged-in');
+    btn.textContent = '⚙ ADMİN ✓';
+    renderStadiums(); // Foto upload panellerini göster
+  } else {
+    document.getElementById('admin-error').textContent = '✗ YANLIŞ BİLGİ!';
+    document.getElementById('admin-pass').value = '';
+  }
+}
+
+// Enter ile giriş
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('admin-login-overlay').classList.contains('open')) {
+    doAdminLogin();
+  }
+});
+
+function doAdminLogout() {
+  isAdmin = false;
+  const btn = document.getElementById('admin-btn');
+  btn.classList.remove('logged-in');
+  btn.textContent = '⚙ ADMİN';
+  renderStadiums();
+}
+
+// ======================================================
+// FOTO UPLOAD & LOCALSTORAGE
+// ======================================================
+
+function getStoredPhotos() {
+  try {
+    const data = localStorage.getItem('wc2026_stadium_photos');
+    return data ? JSON.parse(data) : {};
+  } catch(e) { return {}; }
+}
+
+function savePhoto(stadiumKey, dataUrl) {
+  try {
+    const photos = getStoredPhotos();
+    photos[stadiumKey] = dataUrl;
+    localStorage.setItem('wc2026_stadium_photos', JSON.stringify(photos));
+  } catch(e) {
+    alert('localStorage dolu olabilir! Daha küçük bir görsel dene.');
+  }
+}
+
+function removePhoto(stadiumKey) {
+  const photos = getStoredPhotos();
+  delete photos[stadiumKey];
+  localStorage.setItem('wc2026_stadium_photos', JSON.stringify(photos));
+  renderStadiums();
+}
+
+function handlePhotoUpload(input, stadiumKey) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    savePhoto(stadiumKey, e.target.result);
+    renderStadiums();
+  };
+  reader.readAsDataURL(file);
+}
+
+// ======================================================
+// OYUN SİSTEMİ
+// ======================================================
+
+function startGame(type) {
+  document.querySelector('header').classList.add('hidden-for-game');
+  document.querySelector('nav.nav-tabs').classList.add('hidden-for-game');
+  window.scrollTo(0, 0);
+  document.getElementById('game-menu').style.display = 'none';
+  document.getElementById('game-area').style.display = 'block';
+  const cont = document.getElementById('game-container');
+  if (type === 'penalty') initPenaltyGame(cont);
+  else if (type === 'header') initHeaderGame(cont);
+  else if (type === 'cards') initCardGame(cont);
+}
+
+function backToMenu() {
+  document.querySelector('header').classList.remove('hidden-for-game');
+  document.querySelector('nav.nav-tabs').classList.remove('hidden-for-game');
+  if (window.hdrInterval) { clearInterval(window.hdrInterval); window.hdrInterval = null; }
+  document.getElementById('game-area').style.display = 'none';
+  document.getElementById('game-menu').style.display = 'block';
+  document.getElementById('game-container').innerHTML = '';
+  const bp = localStorage.getItem('wc_best_penalty')||'0';
+  const bh = localStorage.getItem('wc_best_header')||'0';
+  if(document.getElementById('best-penalty')) document.getElementById('best-penalty').textContent=bp+'/5';
+  if(document.getElementById('best-header')) document.getElementById('best-header').textContent=bh;
+}
+
+// ======================================================
+// OYUN 1: PENALTİ ATIŞI
+// ======================================================
+function initPenaltyGame(cont) {
+  cont.innerHTML = `
+    <div style="text-align:center">
+      <div style="font-size:9px;color:var(--gold);margin-bottom:8px">⚽ PENALTİ ATIŞI</div>
+      <canvas id="penalty-canvas" width="400" height="300" style="image-rendering:pixelated;border:3px solid var(--border);max-width:100%;background:#1a4a1a"></canvas>
+      <div style="margin-top:10px;font-size:8px;color:var(--white)" id="penalty-status">Yön seç ve bas!</div>
+      <div style="margin-top:8px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <button onclick="shootPenalty('sol-ust')" class="shoot-btn" style="background:#1a1a3a;border:2px solid var(--border);color:var(--cyan);font-family:'Press Start 2P',monospace;font-size:6px;padding:8px 10px;cursor:pointer">↖ SOL ÜST</button>
+        <button onclick="shootPenalty('sol-alt')" class="shoot-btn" style="background:#1a1a3a;border:2px solid var(--border);color:var(--cyan);font-family:'Press Start 2P',monospace;font-size:6px;padding:8px 10px;cursor:pointer">↙ SOL ALT</button>
+        <button onclick="shootPenalty('orta')" class="shoot-btn" style="background:#1a1a3a;border:2px solid var(--border);color:var(--gold);font-family:'Press Start 2P',monospace;font-size:6px;padding:8px 10px;cursor:pointer">⬆ ORTA</button>
+        <button onclick="shootPenalty('sag-alt')" class="shoot-btn" style="background:#1a1a3a;border:2px solid var(--border);color:var(--cyan);font-family:'Press Start 2P',monospace;font-size:6px;padding:8px 10px;cursor:pointer">↘ SAĞ ALT</button>
+        <button onclick="shootPenalty('sag-ust')" class="shoot-btn" style="background:#1a1a3a;border:2px solid var(--border);color:var(--cyan);font-family:'Press Start 2P',monospace;font-size:6px;padding:8px 10px;cursor:pointer">↗ SAĞ ÜST</button>
+      </div>
+      <div style="margin-top:10px;font-size:8px">
+        <span style="color:var(--green)">GOL: <span id="pen-score">0</span></span>
+        &nbsp;&nbsp;
+        <span style="color:var(--red)">KURTARIŞ: <span id="pen-miss">0</span></span>
+        &nbsp;&nbsp;
+        <span style="color:var(--grey)">KALAN: <span id="pen-left">5</span></span>
+      </div>
+    </div>`;
+
+  window.penState = { score: 0, miss: 0, left: 5, shooting: false };
+  drawPenaltyScene('idle', null);
+}
+
+function drawPenaltyScene(state, direction) {
+  const canvas = document.getElementById('penalty-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = 400, H = 300;
+
+  // Saha
+  ctx.fillStyle = '#1a4a1a';
+  ctx.fillRect(0, 0, W, H);
+  // Çizgiler
+  ctx.strokeStyle = '#ffffff44'; ctx.lineWidth = 2;
+  ctx.strokeRect(10, 10, W-20, H-20);
+
+  // Kale
+  const gx = 100, gy = 30, gw = 200, gh = 120;
+  ctx.fillStyle = '#ffffff22';
+  ctx.fillRect(gx, gy, gw, gh);
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = 3;
+  ctx.strokeRect(gx, gy, gw, gh);
+
+  // Kale direği pixel efekti
+  for (let i = 0; i < gh; i += 8) {
+    ctx.fillStyle = i % 16 === 0 ? '#ffffff' : '#aaaaaa';
+    ctx.fillRect(gx-4, gy+i, 4, 8);
+    ctx.fillRect(gx+gw, gy+i, 4, 8);
+  }
+  for (let i = 0; i < gw+8; i += 8) {
+    ctx.fillStyle = i % 16 === 0 ? '#ffffff' : '#aaaaaa';
+    ctx.fillRect(gx-4+i, gy-4, 8, 4);
+  }
+
+  // Penaltı noktası
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(W/2-4, H-60, 8, 8);
+
+  // Top
+  if (state === 'idle' || state === 'result') {
+    drawPixelBall(ctx, W/2, H-50, 12);
+  } else if (state === 'flying') {
+    const targets = {
+      'sol-ust': {x: gx+30, y: gy+20},
+      'sol-alt': {x: gx+30, y: gy+gh-20},
+      'orta':    {x: W/2,   y: gy+gh/2},
+      'sag-alt': {x: gx+gw-30, y: gy+gh-20},
+      'sag-ust': {x: gx+gw-30, y: gy+20},
+    };
+    const t = targets[direction] || {x: W/2, y: gy+gh/2};
+    drawPixelBall(ctx, t.x, t.y, 8);
+  }
+
+  // Kaleci
+  drawPixelGoalkeeper(ctx, state, direction, gx, gy, gw, gh);
+
+  // Oyuncu
+  drawPixelPlayer(ctx, W/2 - 12, H - 80, '#3355ff');
+
+  // Sonuç mesajı
+  if (state === 'gol') {
+    ctx.fillStyle = 'rgba(0,255,68,0.85)';
+    ctx.fillRect(W/2-80, H/2-24, 160, 48);
+    ctx.fillStyle = '#000';
+    ctx.font = 'bold 18px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('⚽ GOL!', W/2, H/2+6);
+  } else if (state === 'miss') {
+    ctx.fillStyle = 'rgba(255,51,68,0.85)';
+    ctx.fillRect(W/2-100, H/2-24, 200, 48);
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 14px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('KURTARILDI!', W/2, H/2+6);
+  }
+}
+
+function drawPixelBall(ctx, x, y, r) {
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(x-r, y-r, r*2, r*2);
+  ctx.fillStyle = '#333';
+  ctx.fillRect(x-r/2, y-r, r, r/2);
+  ctx.fillRect(x-r, y-r/2, r/2, r);
+  ctx.fillRect(x+r/2-2, y+r/2-2, r/2, r/2);
+}
+
+function drawPixelGoalkeeper(ctx, state, dir, gx, gy, gw, gh) {
+  let kx = gx + gw/2 - 10;
+  const ky = gy + gh - 40;
+
+  if (state === 'miss' || state === 'flying') {
+    if (dir === 'sol-ust' || dir === 'sol-alt') kx = gx + 20;
+    else if (dir === 'sag-ust' || dir === 'sag-alt') kx = gx + gw - 40;
+  }
+
+  // Kaleci pixeli
+  ctx.fillStyle = '#ff6600'; // forma
+  ctx.fillRect(kx, ky, 20, 24);
+  ctx.fillStyle = '#ffcc88'; // kafa
+  ctx.fillRect(kx+4, ky-16, 12, 12);
+  ctx.fillStyle = '#ffcc88'; // kollar
+  ctx.fillRect(kx-8, ky+4, 8, 8);
+  ctx.fillRect(kx+20, ky+4, 8, 8);
+  ctx.fillStyle = '#333'; // bacaklar
+  ctx.fillRect(kx+2, ky+24, 6, 12);
+  ctx.fillRect(kx+12, ky+24, 6, 12);
+}
+
+function drawPixelPlayer(ctx, x, y, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(x, y+12, 20, 24);
+  ctx.fillStyle = '#ffcc88';
+  ctx.fillRect(x+4, y, 12, 12);
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(x-6, y+16, 6, 8);
+  ctx.fillRect(x+20, y+16, 6, 8);
+  ctx.fillStyle = '#111';
+  ctx.fillRect(x+2, y+36, 6, 10);
+  ctx.fillRect(x+12, y+36, 6, 10);
+}
+
+function shootPenalty(direction) {
+  const ps = window.penState;
+  if (ps.shooting || ps.left <= 0) return;
+  ps.shooting = true;
+
+  const directions = ['sol-ust','sol-alt','orta','sag-alt','sag-ust'];
+  const keeperDir = directions[Math.floor(Math.random() * directions.length)];
+
+  // %70 olasılıkla gol
+  const isGoal = keeperDir !== direction || Math.random() > 0.4;
+
+  drawPenaltyScene('flying', direction);
+
+  setTimeout(() => {
+    if (isGoal) {
+      ps.score++;
+      drawPenaltyScene('gol', direction);
+      document.getElementById('penalty-status').textContent = '⚽ GOL! Harika atış!';
+      document.getElementById('penalty-status').style.color = '#00ff44';
+    } else {
+      ps.miss++;
+      drawPenaltyScene('miss', direction);
+      document.getElementById('penalty-status').textContent = '🧤 Kaleci kurtardı!';
+      document.getElementById('penalty-status').style.color = '#ff3344';
+    }
+    ps.left--;
+    document.getElementById('pen-score').textContent = ps.score;
+    document.getElementById('pen-miss').textContent = ps.miss;
+    document.getElementById('pen-left').textContent = ps.left;
+
+    setTimeout(() => {
+      if (ps.left <= 0) {
+        const best = parseInt(localStorage.getItem('wc_best_penalty') || '0');
+        if (ps.score > best) localStorage.setItem('wc_best_penalty', ps.score);
+        document.getElementById('penalty-status').textContent =
+          `OYUN BİTTİ! ${ps.score}/5 gol attın! ${ps.score >= 4 ? '🏆 Harika!' : ps.score >= 2 ? '👍 İyi!' : '😅 Tekrar dene!'}`;
+        document.getElementById('penalty-status').style.color = '#ffd700';
+        document.querySelector('.shoot-btn') && document.querySelectorAll('.shoot-btn').forEach(b => b.disabled = true);
+        // Tekrar oyna butonu
+        setTimeout(() => {
+          const cont = document.getElementById('game-container');
+          const btn = document.createElement('div');
+          btn.innerHTML = `<button onclick="initPenaltyGame(document.getElementById('game-container'))" style="font-family:'Press Start 2P',monospace;font-size:7px;padding:10px 16px;background:var(--gold);color:#000;border:none;border-bottom:4px solid #886600;cursor:pointer;margin-top:10px;display:block;margin-left:auto;margin-right:auto">↺ TEKRAR OYNA</button>`;
+          cont.appendChild(btn);
+        }, 500);
+      } else {
+        drawPenaltyScene('idle', null);
+        document.getElementById('penalty-status').textContent = 'Yön seç ve bas!';
+        document.getElementById('penalty-status').style.color = '#eeeeff';
+      }
+      ps.shooting = false;
+    }, 1200);
+  }, 600);
+}
+
+// ======================================================
+// OYUN 2: KAFA GOLÜ
+// ======================================================
+function initHeaderGame(cont) {
+  cont.innerHTML = `
+    <div style="text-align:center">
+      <div style="font-size:9px;color:var(--gold);margin-bottom:8px">🤸 KAFA GOLÜ</div>
+      <canvas id="header-canvas" width="400" height="300" style="image-rendering:pixelated;border:3px solid var(--border);max-width:100%;cursor:pointer" onclick="doHeaderShot()"></canvas>
+      <div style="margin-top:8px;font-size:8px;color:var(--white)" id="header-status">Top geliyor — tam zamanında bas!</div>
+      <div style="margin-top:6px;font-size:8px">
+        <span style="color:var(--green)">GOL: <span id="hdr-score">0</span></span>
+        &nbsp;&nbsp;
+        <span style="color:var(--grey)">ATIŞ: <span id="hdr-shots">0</span>/10</span>
+      </div>
+      <div style="margin-top:8px">
+        <button onclick="doHeaderShot()" style="font-family:'Press Start 2P',monospace;font-size:8px;padding:10px 20px;background:var(--cyan);color:#000;border:none;border-bottom:4px solid #006699;cursor:pointer">⬆ KAFA VUR!</button>
+      </div>
+    </div>`;
+
+  window.hdrState = {
+    score: 0, shots: 0, ballX: 0, ballY: 150,
+    ballVx: 3, ballVy: -1, phase: 'flying',
+    frame: 0, result: '', resultTimer: 0
+  };
+
+  window.hdrInterval = setInterval(() => {
+    updateHeaderGame();
+    drawHeaderGame();
+  }, 50);
+}
+
+function updateHeaderGame() {
+  const s = window.hdrState;
+  s.frame++;
+
+  if (s.phase === 'flying') {
+    s.ballX += s.ballVx;
+    s.ballY += s.ballVy;
+    s.ballVy += 0.15; // yerçekimi
+
+    if (s.ballX <= 0 || s.ballX >= 400) {
+      s.ballVx = -s.ballVx;
+      s.ballX = Math.max(20, Math.min(380, s.ballX));
+    }
+    if (s.ballY >= 250) {
+      s.ballY = 250;
+      s.ballVy = -Math.abs(s.ballVy) * 0.7;
+    }
+    // Yeni top gelişi
+    if (s.ballX <= 0) {
+      s.ballX = 400;
+      s.ballY = 100 + Math.random() * 80;
+      s.ballVx = -(2 + Math.random() * 3);
+      s.ballVy = Math.random() * 2 - 1;
+    }
+  }
+
+  if (s.resultTimer > 0) {
+    s.resultTimer--;
+    if (s.resultTimer === 0) s.result = '';
+  }
+}
+
+function drawHeaderGame() {
+  const canvas = document.getElementById('header-canvas');
+  if (!canvas) { clearInterval(window.hdrInterval); return; }
+  const ctx = canvas.getContext('2d');
+  const W = 400, H = 300;
+  const s = window.hdrState;
+
+  // Saha
+  ctx.fillStyle = '#1a4a1a';
+  ctx.fillRect(0, 0, W, H);
+
+  // Arka kale
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
+  ctx.strokeRect(W/2-80, 20, 160, 80);
+
+  // Çizgiler
+  ctx.strokeStyle = '#ffffff33'; ctx.lineWidth = 1;
+  ctx.strokeRect(5, 5, W-10, H-10);
+
+  // Oyuncu (sağ tarafta sabit)
+  const px = 280, py = 180;
+  drawPixelPlayer(ctx, px, py, '#3355ff');
+
+  // Top
+  drawPixelBall(ctx, s.ballX, s.ballY, 12);
+
+  // Serbest bölge göstergesi (top oyuncuya yakınken yeşil çerçeve)
+  const dx = s.ballX - (px+10);
+  const dy = s.ballY - (py+20);
+  const dist = Math.sqrt(dx*dx + dy*dy);
+  if (dist < 60) {
+    ctx.strokeStyle = '#00ff44';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(px-5, py-5, 35, 55);
+  }
+
+  // Sonuç
+  if (s.result) {
+    const isGol = s.result === 'GOL';
+    ctx.fillStyle = isGol ? 'rgba(0,255,68,0.9)' : 'rgba(255,51,68,0.9)';
+    ctx.fillRect(W/2-90, H/2-24, 180, 48);
+    ctx.fillStyle = '#000';
+    ctx.font = 'bold 20px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(isGol ? '⚽ GOL!' : '❌ KAÇTI!', W/2, H/2+8);
+  }
+
+  // Skor
+  ctx.fillStyle = 'rgba(0,0,0,0.6)';
+  ctx.fillRect(0, 0, 120, 28);
+  ctx.fillStyle = '#ffd700';
+  ctx.font = '10px monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText(`GOL:${s.score} ATIŞ:${s.shots}/10`, 6, 18);
+}
+
+function doHeaderShot() {
+  const s = window.hdrState;
+  if (!s || s.shots >= 10) return;
+
+  const px = 280, py = 180;
+  const dx = s.ballX - (px+10);
+  const dy = s.ballY - (py+20);
+  const dist = Math.sqrt(dx*dx + dy*dy);
+
+  s.shots++;
+  document.getElementById('hdr-shots').textContent = s.shots;
+
+  if (dist < 70) {
+    s.score++;
+    s.result = 'GOL';
+    s.resultTimer = 20;
+    document.getElementById('hdr-score').textContent = s.score;
+    document.getElementById('header-status').textContent = '⚽ GOL! Mükemmel zamanlama!';
+    document.getElementById('header-status').style.color = '#00ff44';
+    // Topu kaleye gönder
+    s.ballX = W/2;
+    s.ballY = 50;
+    s.ballVx = (Math.random()-0.5) * 4;
+    s.ballVy = -3;
+  } else {
+    s.result = 'KAÇTI';
+    s.resultTimer = 15;
+    document.getElementById('header-status').textContent = '❌ Kaçırdın! Topu bekle...';
+    document.getElementById('header-status').style.color = '#ff3344';
+  }
+
+  if (s.shots >= 10) {
+    clearInterval(window.hdrInterval);
+    const best = parseInt(localStorage.getItem('wc_best_header') || '0');
+    if (s.score > best) localStorage.setItem('wc_best_header', s.score);
+    setTimeout(() => {
+      document.getElementById('header-status').textContent =
+        `OYUN BİTTİ! ${s.score}/10 gol! ${s.score >= 7 ? '🏆 Efsane!' : s.score >= 4 ? '👍 İyi!' : '😅 Pratik yap!'}`;
+      document.getElementById('header-status').style.color = '#ffd700';
+      const cont = document.getElementById('game-container');
+      const btn = document.createElement('div');
+      btn.innerHTML = `<button onclick="clearInterval(window.hdrInterval);initHeaderGame(document.getElementById('game-container'))" style="font-family:'Press Start 2P',monospace;font-size:7px;padding:10px 16px;background:var(--gold);color:#000;border:none;border-bottom:4px solid #886600;cursor:pointer;margin-top:10px;display:block;margin-left:auto;margin-right:auto">↺ TEKRAR OYNA</button>`;
+      cont.appendChild(btn);
+    }, 800);
+  }
+}
+
+// ======================================================
+// OYUN 3: EXPLODING KITTENS FOOTBALL EDITION
+// ======================================================
+
+const EK_CARDS = [
+  { id:'patlayan', name:'PATLAYAN KEDİ', emoji:'💥', color:'#ff2200', bg:'#220000', desc:'Bu kartı çekersen ELENİRSİN!', effect:'explode', count:3 },
+  { id:'defans', name:'DEFANS', emoji:'🛡️', color:'#0088ff', bg:'#001133', desc:'Patlayan kediyi engelle! Desteye geri koy.', effect:'defans', count:4 },
+  { id:'pas', name:'PAS', emoji:'🟢', color:'#00cc44', bg:'#003311', desc:'Sıradaki oyuncuya kart ver (o çeker).', effect:'pas', count:4 },
+  { id:'sut', name:'ŞUT', emoji:'⚽', color:'#ffcc00', bg:'#332200', desc:'Hedef oyuncuya saldır — o 2 kart çeker.', effect:'sut', count:3 },
+  { id:'karistir', name:'KARIŞTIR', emoji:'🔀', color:'#aa44ff', bg:'#220033', desc:'Desteyi karıştır.', effect:'karistir', count:4 },
+  { id:'gozlemci', name:'GÖZLEMCİ', emoji:'📷', color:'#ff8800', bg:'#331100', desc:'Sıradaki 3 kartı gizlice gör.', effect:'gozlemci', count:3 },
+  { id:'forma', name:'FORMA DEĞİŞTİR', emoji:'👕', color:'#00ddff', bg:'#001122', desc:'Sıra yönünü tersine çevir.', effect:'forma', count:3 },
+  { id:'iyilestir', name:'İYİLEŞTİR', emoji:'🏥', color:'#ff4488', bg:'#220011', desc:'Bir saldırıyı iptal et.', effect:'iyilestir', count:3 },
+  { id:'extratime', name:'EXTRA TIME', emoji:'⏱️', color:'#ff6600', bg:'#331100', desc:'+5 Dk: Bu tur kart çekmeden pas geç.', effect:'extratime', count:2 },
+  { id:'taraftar', name:'TARAFTAR DESTEĞİ', emoji:'📣', color:'#ffdd00', bg:'#332200', desc:'Desteden güvenli 1 kart çek.', effect:'taraftar', count:4 },
+];
+
+function ekShuffle(arr) {
+  for (let i = arr.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function buildEKDeck(playerCount) {
+  let deck = [];
+  EK_CARDS.forEach(c => {
+    if (c.effect !== 'explode') {
+      for (let i = 0; i < c.count; i++) deck.push({...c});
+    }
+  });
+  ekShuffle(deck);
+  for (let i = 0; i < playerCount - 1; i++) {
+    deck.push({...EK_CARDS.find(c => c.effect === 'explode')});
+  }
+  return ekShuffle(deck);
+}
+
+function initCardGame(cont) {
+  const playerCount = 3;
+  const deck = buildEKDeck(playerCount);
+  const hands = [[], [], []];
+  const names = ['SEN', 'MERT', 'ALİ'];
+  const alive = [true, true, true];
+  for (let p = 0; p < playerCount; p++) {
+    for (let i = 0; i < 4; i++) {
+      const safeIdx = deck.findIndex(c => c.effect !== 'explode');
+      if (safeIdx >= 0) hands[p].push(deck.splice(safeIdx, 1)[0]);
+    }
+  }
+  window.ekState = {
+    deck, hands, names, alive,
+    current: 0, direction: 1,
+    log: [], over: false, winner: -1,
+    extraTime: [false, false, false],
+    pendingAttack: 0,
+    peekCards: null,
+    shield: [false, false, false],
+    playerCount,
+  };
+  renderEKGame();
+}
+
+function renderEKGame() {
+  const cs = window.ekState;
+  if (!cs) return;
+  const cont = document.getElementById('game-container');
+  if (!cont) return;
+
+  const logHtml = cs.log.slice(-5).map((l, i) => `<div style="font-size:6px;color:${i===cs.log.slice(-5).length-1?'#aabbff':'#445566'};padding:2px 0;border-bottom:1px solid #111122">${l}</div>`).join('');
+
+  const canPlay = cs.current === 0 && !cs.over && !cs.peekCards;
+
+  const myHandHtml = cs.hands[0].map((card, i) => `
+    <div onclick="${canPlay ? `useEKCard(0,${i})` : ''}" style="
+      background:${card.bg};border:3px solid ${card.color};
+      border-bottom:5px solid ${card.color};
+      padding:10px 6px 8px;cursor:${canPlay?'pointer':'default'};
+      text-align:center;min-width:64px;max-width:80px;flex:1;
+      opacity:${canPlay?1:0.6};" 
+      onmouseover="if(${canPlay})this.style.transform='translateY(-4px)'" 
+      onmouseout="this.style.transform='translateY(0)'">
+      <div style="font-size:22px;margin-bottom:4px">${card.emoji}</div>
+      <div style="font-size:5px;color:${card.color};font-weight:bold;line-height:1.5">${card.name}</div>
+      <div style="font-size:4px;color:#778;margin-top:3px;line-height:1.4">${card.desc}</div>
+    </div>`).join('');
+
+  const aiHtml = [1,2].map(pi => {
+    if (!cs.alive[pi]) return `<div style="padding:8px;background:#110000;border:2px solid #330000;opacity:0.4;text-align:center;flex:1"><div style="font-size:16px">💀</div><div style="font-size:6px;color:#ff3344">${cs.names[pi]}<br>ELENDİ</div></div>`;
+    return `<div style="padding:8px;background:#0a0a2a;border:2px solid ${cs.current===pi?'#ffd700':'#222244'};text-align:center;flex:1;${cs.current===pi?'box-shadow:0 0 8px #ffd70044':''}">
+      <div style="font-size:18px">🤖</div>
+      <div style="font-size:6px;color:${cs.current===pi?'#ffd700':'#8888aa'};margin:4px 0">${cs.names[pi]}${cs.current===pi?' ◄':''}</div>
+      <div style="font-size:6px;color:#445">${cs.hands[pi].map(()=>'🃏').join('')} (${cs.hands[pi].length})</div>
+      ${cs.shield[pi]?'<div style="font-size:5px;color:#ff4488">🏥</div>':''}
+      ${cs.extraTime[pi]?'<div style="font-size:5px;color:#ff6600">⏱</div>':''}
+    </div>`;
+  }).join('');
+
+  const peekHtml = cs.peekCards ? `
+    <div style="position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;display:flex;align-items:center;justify-content:center">
+      <div style="background:#0a0a2a;border:3px solid #ffd700;padding:20px;max-width:340px;text-align:center;font-family:'Press Start 2P',monospace">
+        <div style="font-size:8px;color:#ffd700;margin-bottom:12px">📷 GÖZLEMCİ</div>
+        <div style="font-size:7px;color:#8888aa;margin-bottom:10px">Sıradaki 3 kart:</div>
+        <div style="display:flex;gap:8px;justify-content:center;margin-bottom:14px">
+          ${cs.peekCards.map(c=>`<div style="background:${c.bg};border:2px solid ${c.color};padding:8px;min-width:60px;text-align:center"><div style="font-size:20px">${c.emoji}</div><div style="font-size:5px;color:${c.color}">${c.name}</div></div>`).join('')}
+        </div>
+        <button onclick="closePeek()" style="font-family:'Press Start 2P',monospace;font-size:7px;padding:8px 16px;background:#ffd700;color:#000;border:none;cursor:pointer">TAMAM ✓</button>
+      </div>
+    </div>` : '';
+
+  cont.innerHTML = `
+    ${peekHtml}
+    <div style="max-width:520px;margin:0 auto;font-family:'Press Start 2P',monospace">
+      <div style="font-size:9px;color:#ffd700;text-align:center;margin-bottom:12px">🃏 EXPLODING KITTENS FOOTBALL</div>
+
+      ${cs.over ? `<div style="text-align:center;padding:20px;margin-bottom:16px;background:${cs.winner===0?'#002211':'#220000'};border:4px solid ${cs.winner===0?'#00ff44':'#ff3344'}">
+        <div style="font-size:48px">${cs.winner===0?'🏆':'💀'}</div>
+        <div style="font-size:10px;color:${cs.winner===0?'#00ff44':'#ff3344'};margin:8px 0">${cs.winner===0?'ŞAMPİYON!':cs.names[cs.winner]+' KAZANDI!'}</div>
+        <button onclick="initCardGame(document.getElementById('game-container'))" style="font-family:'Press Start 2P',monospace;font-size:7px;padding:10px 16px;background:#ffd700;color:#000;border:none;border-bottom:4px solid #886600;cursor:pointer;margin-top:8px">↺ TEKRAR OYNA</button>
+      </div>` : ''}
+
+      <div style="display:flex;gap:8px;margin-bottom:10px">${aiHtml}</div>
+
+      <div style="display:flex;align-items:center;gap:10px;padding:10px;background:#050510;border:2px solid #222244;margin-bottom:10px">
+        <div style="text-align:center;cursor:${canPlay?'pointer':'default'}" onclick="${canPlay?'drawEKCard()':''}">
+          <div style="font-size:28px;${canPlay?'filter:drop-shadow(0 0 8px #ffd700)':''}"">🃏</div>
+          <div style="font-size:6px;color:${canPlay?'#ffd700':'#445'}">${cs.deck.length} KART</div>
+          ${canPlay?'<div style="font-size:5px;color:#00ff44">ÇEK</div>':''}
+        </div>
+        <div style="flex:1">
+          <div style="font-size:6px;color:#ffd700;margin-bottom:4px">SIRA: ${cs.names[cs.current]}${cs.current===0?' (SEN)':''} ${cs.direction===-1?'⟲ TERS':'⟳'}</div>
+          ${cs.pendingAttack>0?`<div style="font-size:6px;color:#ff3344">⚠️ ${cs.pendingAttack} KART ÇEKMEK ZORUNDA!</div>`:''}
+          ${cs.extraTime[0]&&cs.current===0?'<div style="font-size:6px;color:#ff6600">⏱ EXTRA TIME AKTİF</div>':''}
+        </div>
+        <div style="font-size:6px;color:#445">${cs.alive.filter(Boolean).length}/3 hayatta</div>
+      </div>
+
+      <div style="margin-bottom:10px">
+        <div style="font-size:7px;color:#00ff44;margin-bottom:6px">👤 SENİN ELİN (${cs.hands[0].length}) ${cs.shield[0]?'🏥':''} ${cs.extraTime[0]?'⏱':''} ${cs.current===0&&!cs.over?'◄ SİRAN':''}</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;min-height:80px">${myHandHtml||'<div style="font-size:7px;color:#445;padding:10px">Kart yok</div>'}</div>
+        ${canPlay?`
+          <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+            <button onclick="drawEKCard()" style="font-family:'Press Start 2P',monospace;font-size:6px;padding:8px 12px;background:#1a1a3a;color:#ffd700;border:2px solid #ffd700;cursor:pointer">📦 KART ÇEK${cs.pendingAttack>0?' ('+cs.pendingAttack+')':''}</button>
+            ${cs.extraTime[0]?`<button onclick="useExtraTimePass()" style="font-family:'Press Start 2P',monospace;font-size:6px;padding:8px 12px;background:#331100;color:#ff6600;border:2px solid #ff6600;cursor:pointer">⏱ PAS GEÇ</button>`:''}
+          </div>`:''
+        }
+      </div>
+
+      <div style="padding:8px;background:#020208;border:1px solid #111133;max-height:100px;overflow-y:auto">
+        <div style="font-size:6px;color:#3355aa;margin-bottom:4px">📋 GÜNLÜK</div>
+        ${logHtml}
+      </div>
+    </div>`;
+}
+
+function useEKCard(pi, ci) {
+  const cs = window.ekState;
+  if (cs.over || cs.current !== pi || cs.peekCards) return;
+  const card = cs.hands[pi].splice(ci, 1)[0];
+  cs.log.push(`${cs.names[pi]}: ${card.emoji} ${card.name}`);
+  const next = ekGetNext(pi);
+
+  if (card.effect === 'defans') {
+    cs.shield[pi] = true;
+    cs.log.push(`🛡️ ${cs.names[pi]} defans aldı!`);
+  } else if (card.effect === 'pas') {
+    cs.pendingAttack++;
+    cs.log.push(`📤 Pas! ${cs.names[next]} kart çekmeli!`);
+    ekNextTurn(pi, true); return;
+  } else if (card.effect === 'sut') {
+    for (let i=0;i<2;i++) ekDrawFor(next);
+    cs.log.push(`⚽ Şut! ${cs.names[next]} 2 kart çekti!`);
+  } else if (card.effect === 'karistir') {
+    ekShuffle(cs.deck);
+    cs.log.push('🔀 Deste karıştırıldı!');
+  } else if (card.effect === 'gozlemci') {
+    cs.peekCards = cs.deck.slice(-3).reverse();
+    cs.log.push('📷 Gözlemci aktif...');
+    renderEKGame(); return;
+  } else if (card.effect === 'forma') {
+    cs.direction *= -1;
+    cs.log.push(`👕 Yön ${cs.direction===1?'normal':'ters'}!`);
+  } else if (card.effect === 'iyilestir') {
+    cs.shield[pi] = true;
+    cs.log.push(`🏥 ${cs.names[pi]} iyileşti!`);
+  } else if (card.effect === 'extratime') {
+    cs.extraTime[pi] = true;
+    cs.log.push(`⏱ ${cs.names[pi]} Extra Time!`);
+  } else if (card.effect === 'taraftar') {
+    ekDrawFor(pi);
+    cs.log.push(`📣 ${cs.names[pi]} 1 kart çekti`);
+  }
+  renderEKGame();
+}
+
+function closePeek() { window.ekState.peekCards = null; renderEKGame(); }
+
+function useExtraTimePass() {
+  const cs = window.ekState;
+  if (!cs.extraTime[0]||cs.current!==0) return;
+  cs.extraTime[0] = false;
+  cs.pendingAttack = 0;
+  cs.log.push('⏱ Extra Time — kart çekmeden geçildi!');
+  ekNextTurn(0, false);
+}
+
+function ekDrawFor(pi) {
+  const cs = window.ekState;
+  if (!cs.deck.length) return;
+  const card = cs.deck.pop();
+  if (card.effect === 'explode') {
+    if (cs.shield[pi]) {
+      cs.shield[pi] = false;
+      cs.log.push(`🛡️ ${cs.names[pi]} patlamayı defansla engelledi!`);
+      cs.deck.splice(Math.floor(Math.random()*cs.deck.length),0,card);
+      ekShuffle(cs.deck);
+    } else {
+      cs.alive[pi] = false;
+      cs.hands[pi] = [];
+      cs.log.push(`💥 ${cs.names[pi]} PATLADI VE ELENDİ!`);
+      const rem = cs.alive.filter(Boolean).length;
+      if (rem===1) { cs.over=true; cs.winner=cs.alive.indexOf(true); cs.log.push(`🏆 ${cs.names[cs.winner]} KAZANDI!`); }
+    }
+  } else {
+    cs.hands[pi].push(card);
+  }
+}
+
+function drawEKCard() {
+  const cs = window.ekState;
+  if (cs.over||cs.current!==0) return;
+  if (cs.pendingAttack>0) {
+    ekDrawFor(0); cs.pendingAttack--;
+    if (!cs.over) { if(cs.pendingAttack>0){renderEKGame();return;} ekNextTurn(0,false); } else renderEKGame();
+    return;
+  }
+  ekDrawFor(0);
+  if (!cs.over) ekNextTurn(0,false); else renderEKGame();
+}
+
+function ekGetNext(from) {
+  const cs = window.ekState;
+  let idx = from;
+  for (let i=0;i<cs.playerCount;i++) {
+    idx=(idx+cs.direction+cs.playerCount)%cs.playerCount;
+    if(cs.alive[idx]) return idx;
+  }
+  return from;
+}
+
+function ekNextTurn(from, skipDraw) {
+  const cs = window.ekState;
+  if (cs.over) { renderEKGame(); return; }
+  cs.current = ekGetNext(from);
+  renderEKGame();
+  if (cs.current!==0&&!cs.over) setTimeout(()=>aiEKTurn(),1000);
+}
+
+function aiEKTurn() {
+  const cs = window.ekState;
+  if (cs.over || cs.current === 0) return;
+  const pi = cs.current;
+  if (!cs.alive[pi]) { ekNextTurn(pi, false); return; }
+
+  const hand = cs.hands[pi];
+
+  // El boşsa direkt kart çek
+  if (hand.length === 0) {
+    cs.log.push(`${cs.names[pi]} el boş, kart çekiyor...`);
+    if (cs.pendingAttack > 0) {
+      for (let i = 0; i < cs.pendingAttack; i++) ekDrawFor(pi);
+      cs.pendingAttack = 0;
+    } else {
+      ekDrawFor(pi);
+    }
+    if (!cs.over) ekNextTurn(pi, false);
+    else renderEKGame();
+    return;
+  }
+
+  // Pas cezası varsa — pas kartı ile at, yoksa çek
+  if (cs.pendingAttack > 0) {
+    const pasIdx = hand.findIndex(c => c.effect === 'pas');
+    if (pasIdx >= 0) {
+      cs.log.push(`${cs.names[pi]} pası pas kartıyla aktarıyor!`);
+      useEKCard(pi, pasIdx);
+      return;
+    }
+    // Pas kartı yoksa cezayı çek
+    cs.log.push(`${cs.names[pi]} ${cs.pendingAttack} kart çekiyor!`);
+    for (let i = 0; i < cs.pendingAttack; i++) ekDrawFor(pi);
+    cs.pendingAttack = 0;
+    if (!cs.over) ekNextTurn(pi, false);
+    else renderEKGame();
+    return;
+  }
+
+  // Strateji: öncelik sırası
+  const sutIdx    = hand.findIndex(c => c.effect === 'sut');
+  const pasIdx    = hand.findIndex(c => c.effect === 'pas');
+  const karistir  = hand.findIndex(c => c.effect === 'karistir');
+  const forma     = hand.findIndex(c => c.effect === 'forma');
+  const extraIdx  = hand.findIndex(c => c.effect === 'extratime');
+  const gozIdx    = hand.findIndex(c => c.effect === 'gozlemci');
+  const iyiIdx    = hand.findIndex(c => c.effect === 'iyilestir');
+  const taraftarI = hand.findIndex(c => c.effect === 'taraftar');
+
+  // Düşmana şut at
+  if (sutIdx >= 0 && Math.random() > 0.3) {
+    useEKCard(pi, sutIdx); return;
+  }
+  // Payla sırayı geç
+  if (pasIdx >= 0 && Math.random() > 0.4) {
+    useEKCard(pi, pasIdx); return;
+  }
+  // Desteyi karıştır (patlayan kedi üstteyse faydalı)
+  if (karistir >= 0 && Math.random() > 0.5) {
+    useEKCard(pi, karistir); return;
+  }
+  // Extra time al
+  if (extraIdx >= 0 && !cs.extraTime[pi]) {
+    useEKCard(pi, extraIdx);
+    // Extra time'ı hemen kullan
+    setTimeout(() => {
+      if (!cs.over && cs.ekState && cs.current === pi) {
+        cs.extraTime[pi] = false;
+        cs.pendingAttack = 0;
+        cs.log.push(`⏱ ${cs.names[pi]} Extra Time — kart çekmeden geçti`);
+        ekNextTurn(pi, false);
+      }
+    }, 500);
+    return;
+  }
+  // Taraftar desteği
+  if (taraftarI >= 0 && Math.random() > 0.6) {
+    useEKCard(pi, taraftarI); return;
+  }
+  // Gözlemci
+  if (gozIdx >= 0 && Math.random() > 0.7) {
+    useEKCard(pi, gozIdx);
+    // Gözlemciyi kapat ve devam et
+    setTimeout(() => {
+      if (cs.peekCards) { cs.peekCards = null; }
+      if (!cs.over) ekNextTurn(pi, false);
+    }, 1200);
+    return;
+  }
+
+  // Hiçbir kart oynamadıysa — kart çek
+  cs.log.push(`${cs.names[pi]} kart çekiyor...`);
+  ekDrawFor(pi);
+  if (!cs.over) ekNextTurn(pi, false);
+  else renderEKGame();
+}
+
+function aiTurn() {} // uyumluluk için boş
+
+function backToMenu() {
+  if (window.hdrInterval) { clearInterval(window.hdrInterval); window.hdrInterval = null; }
+  document.getElementById('game-area').style.display = 'none';
+  document.getElementById('game-menu').style.display = 'block';
+  document.getElementById('game-container').innerHTML = '';
+  const bp = localStorage.getItem('wc_best_penalty')||'0';
+  const bh = localStorage.getItem('wc_best_header')||'0';
+  if(document.getElementById('best-penalty')) document.getElementById('best-penalty').textContent=bp+'/5';
+  if(document.getElementById('best-header')) document.getElementById('best-header').textContent=bh;
+}
+
+// INIT
+renderStars();
+renderGroups();
+renderFixtures();
+renderStadiums();
+renderAbout();
+</script>
+
+<!-- ADMIN BUTONU -->
+<button class="admin-btn" id="admin-btn" onclick="toggleAdminLogin()">⚙ ADMİN</button>
+
+<!-- ADMIN LOGIN MODAL -->
+<div class="admin-login-overlay" id="admin-login-overlay">
+  <div class="admin-login-box">
+    <h3>🔐 ADMİN GİRİŞİ</h3>
+    <div class="admin-error" id="admin-error"></div>
+    <input class="admin-input" type="text" id="admin-user" placeholder="KULLANICI ADI" autocomplete="off">
+    <input class="admin-input" type="password" id="admin-pass" placeholder="ŞİFRE" autocomplete="off">
+    <button class="admin-login-btn" onclick="doAdminLogin()">► GİRİŞ YAP</button>
+    <button class="admin-cancel-btn" onclick="closeAdminLogin()">İPTAL</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer style="text-align:center;padding:24px 16px;background:#060610;border-top:4px solid var(--border);margin-top:32px">
+  <div style="font-size:8px;color:var(--grey);margin-bottom:8px">MADE WITH</div>
+  <div style="font-size:clamp(8px,2vw,13px);color:var(--gold);text-shadow:2px 2px 0 #886600;letter-spacing:2px">
+    🤖 CLAUDE AI  <span style="color:var(--red)">✕</span>  👤 BÜLENT KALKAN
+  </div>
+  <div style="margin-top:10px;font-size:7px;color:#334">
+    ⚽ 2026 FIFA DÜNYA KUPASI · 8-BİT EDİSYON · TÜM HAKLAR SAKLIDIR
+  </div>
+</footer>
+
+
+</html>
